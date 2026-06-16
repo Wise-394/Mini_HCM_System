@@ -1,0 +1,32 @@
+import { Index } from '../pages/index/Index.tsx';
+import { IndexLayout } from '../pages/index/IndexLayout.tsx';
+import { Register } from '../pages/index/Register.tsx';
+import { ErrorRoute } from '../components/ErrorRoute.tsx';
+import { Login } from '../pages/index/Login.tsx';
+import type { RouteObject } from 'react-router';
+
+export const routes: RouteObject[] = [
+  {
+    path: '/',
+    element: <IndexLayout />,
+    errorElement: <ErrorRoute />,
+    children: [
+      {
+        index: true,
+        element: <Index />,
+      },
+      {
+        path: '/register',
+        element: <Register />,
+      },
+      {
+        path: '/login',
+        element: <Login />,
+      },
+    ],
+  },
+  {
+    path: '*',
+    element: <ErrorRoute />,
+  },
+];

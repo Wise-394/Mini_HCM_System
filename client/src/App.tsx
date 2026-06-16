@@ -1,9 +1,9 @@
+import { routes } from "./routes/routes.tsx";
+import { createBrowserRouter, RouterProvider } from "react-router";
+
 function App() {
-  return (
-    <>
-      <h1 className="text-3xl font-bold text-blue-500">Hello World!</h1>
-    </>
-  );
+  const router = createBrowserRouter(routes);
+  return <RouterProvider router={router} />;
 }
 
 export default App;
