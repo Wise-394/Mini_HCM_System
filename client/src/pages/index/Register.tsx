@@ -34,6 +34,7 @@ export const Register = () => {
                   focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15
                   focus:outline-none"
                 required
+                minLength={8}
               />
             </div>
 
@@ -42,7 +43,7 @@ export const Register = () => {
                 htmlFor="email"
                 className="text-sm font-semibold text-gray-700"
               >
-                Work Email
+                Email
               </label>
               <input
                 type="email"
@@ -53,6 +54,7 @@ export const Register = () => {
                   focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15
                   focus:outline-none"
                 required
+                minLength={8}
               />
             </div>
           </div>
@@ -74,6 +76,7 @@ export const Register = () => {
                   focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15
                   focus:outline-none"
                 required
+                minLength={8}
               />
             </div>
 
@@ -93,6 +96,7 @@ export const Register = () => {
                   focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15
                   focus:outline-none"
                 required
+                minLength={8}
               />
             </div>
           </div>
