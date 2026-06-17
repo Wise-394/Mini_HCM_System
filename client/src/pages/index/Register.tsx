@@ -1,29 +1,54 @@
+import { useState } from 'react';
 import { Link } from 'react-router';
 import { useRegister } from '../../hooks/useRegister.tsx';
 
 export const Register = () => {
-  const { registerUser, isLoading, error } = useRegister();
+  const { registerUser, isLoading, error: apiError } = useRegister();
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  const validatePassword = (
+    password: string,
+    repeatPassword: string
+  ): boolean => {
+    if (password !== repeatPassword) {
+      setValidationError('Password does not match');
+      return false;
+    }
+
+    setValidationError(null);
+    return true;
+  };
 
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const form = e.currentTarget;
-    const formData = new FormData(form);
+    const formData = new FormData(e.currentTarget);
+
+    if (
+      !validatePassword(
+        String(formData.get('password')),
+        String(formData.get('repeatPassword'))
+      )
+    ) {
+      return;
+    }
 
     await registerUser({
-      password: formData.get('password') as string,
+      password: String(formData.get('password')),
       userProfile: {
-        name: formData.get('name') as string,
-        email: formData.get('email') as string,
+        name: String(formData.get('name')),
+        email: String(formData.get('email')),
         role: null,
-        timezone: formData.get('timezone') as string,
+        timezone: String(formData.get('timezone')),
         schedule: {
-          start: formData.get('schedule_start') as string,
-          end: formData.get('schedule_end') as string,
+          start: String(formData.get('schedule_start')),
+          end: String(formData.get('schedule_end')),
         },
       },
     });
   };
+
+  const displayError = validationError || apiError;
 
   return (
     <main
@@ -40,10 +65,6 @@ export const Register = () => {
         >
           Register Your Account
         </h1>
-
-        {error && (
-          <p className="mb-4 text-center text-sm text-red-500">{error}</p>
-        )}
 
         <form className="grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -119,7 +140,7 @@ export const Register = () => {
               <input
                 type="password"
                 id="repeat-password"
-                name="repeat_password"
+                name="repeatPassword"
                 className="w-full rounded-md border border-gray-300 bg-white
                   px-3 py-2 text-sm text-gray-900 transition-colors
                   focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15
@@ -177,6 +198,7 @@ export const Register = () => {
                     type="time"
                     id="start-time"
                     name="schedule_start"
+                    defaultValue="00:00"
                     className="w-full rounded-md border border-gray-300 bg-white
                       px-3 py-2 text-sm text-gray-900 transition-colors
                       focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15
@@ -195,6 +217,7 @@ export const Register = () => {
                   <input
                     type="time"
                     id="end-time"
+                    defaultValue="00:00"
                     name="schedule_end"
                     className="w-full rounded-md border border-gray-300 bg-white
                       px-3 py-2 text-sm text-gray-900 transition-colors
@@ -206,6 +229,12 @@ export const Register = () => {
               </div>
             </fieldset>
           </div>
+
+          {displayError && (
+            <p className="mb-4 text-center text-sm text-red-500">
+              {displayError}
+            </p>
+          )}
 
           <div className="pt-2">
             <button

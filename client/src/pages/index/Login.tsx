@@ -1,5 +1,20 @@
+import type React from 'react';
 import { Link } from 'react-router';
+import { useLogin } from '../../hooks/useLogin.tsx';
+
 export const Login = () => {
+  const { loginUser, isLoading, error } = useLogin();
+
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+
+    await loginUser({
+      email: String(formData.get('email')),
+      password: String(formData.get('password')),
+    });
+  };
+
   return (
     <main
       className="flex min-h-[90vh] items-center justify-center bg-gray-50 p-6
@@ -16,7 +31,7 @@ export const Login = () => {
           Sign In to Your Account
         </h1>
 
-        <form className="grid grid-cols-1 gap-6">
+        <form className="grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
           <div className="flex flex-col gap-2">
             <label
               htmlFor="email"
@@ -37,14 +52,12 @@ export const Login = () => {
           </div>
 
           <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between">
-              <label
-                htmlFor="password"
-                className="text-sm font-semibold text-gray-700"
-              >
-                Password
-              </label>
-            </div>
+            <label
+              htmlFor="password"
+              className="text-sm font-semibold text-gray-700"
+            >
+              Password
+            </label>
             <input
               type="password"
               id="password"
@@ -57,15 +70,21 @@ export const Login = () => {
             />
           </div>
 
+          {error && (
+            <p className="mb-4 text-center text-sm text-red-500">{error}</p>
+          )}
+
           <div className="pt-2">
             <button
               type="submit"
+              disabled={isLoading}
               className="w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm
                 font-semibold text-white transition-colors hover:bg-blue-700
                 focus:ring-2 focus:ring-blue-600/40 focus:outline-none
-                hover:cursor-pointer"
+                hover:cursor-pointer disabled:opacity-50
+                disabled:cursor-not-allowed"
             >
-              Sign In
+              {isLoading ? 'Signing in...' : 'Sign in'}
             </button>
           </div>
 

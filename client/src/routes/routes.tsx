@@ -1,7 +1,7 @@
 import { Index } from '../pages/index/Index.tsx';
 import { IndexLayout } from '../pages/index/IndexLayout.tsx';
 import { Register } from '../pages/index/Register.tsx';
-import { ErrorRoute } from '../components/ErrorRoute.tsx';
+import { ErrorRoute } from '../pages/ErrorRoute.tsx';
 import { Login } from '../pages/index/Login.tsx';
 import type { RouteObject } from 'react-router';
 
