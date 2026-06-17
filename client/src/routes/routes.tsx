@@ -4,6 +4,8 @@ import { Register } from '../pages/index/Register.tsx';
 import { ErrorRoute } from '../pages/ErrorRoute.tsx';
 import { Login } from '../pages/index/Login.tsx';
 import type { RouteObject } from 'react-router';
+import { HomeLayout } from '../pages/home/HomeLayout.tsx';
+import { Home } from '../pages/home/Home.tsx';
 
 export const routes: RouteObject[] = [
   {
@@ -28,5 +30,15 @@ export const routes: RouteObject[] = [
   {
     path: '*',
     element: <ErrorRoute />,
+  },
+  {
+    path: '/home',
+    element: <HomeLayout />,
+    children: [
+      {
+        index: true,
+        element: <Home />,
+      },
+    ],
   },
 ];
