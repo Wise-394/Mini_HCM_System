@@ -59,7 +59,7 @@ export const useRegister = () => {
   const { mutateAsync, isPending, error } = useMutation({
     mutationFn: registerUserWorkflow,
     onSuccess: (data) => {
-      login(data.user, data.idToken);
+      login({ uid: data.user.uid, email: data.user.email! }, data.idToken);
     },
   });
 

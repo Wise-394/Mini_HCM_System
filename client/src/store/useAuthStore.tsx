@@ -1,10 +1,9 @@
 import { create } from 'zustand';
-import type { User } from 'firebase/auth';
 
 interface AuthState {
-  user: User | null;
+  user: { uid: string; email: string } | null;
   idToken: string | null;
-  login: (user: User, idToken: string) => void;
+  login: (user: { uid: string; email: string }, idToken: string) => void;
   logout: () => void;
 }
 
