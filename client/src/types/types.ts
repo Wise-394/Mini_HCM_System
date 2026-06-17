@@ -7,7 +7,7 @@ export interface WorkSchedule {
 
 export interface UserProfileType {
   //before registering, uid is null, uid is assigned by firebase automatically
-  uid: string | null;
+  uid?: string;
   name: string;
   email: string;
   role: UserRole | null;

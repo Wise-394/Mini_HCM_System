@@ -1,9 +1,14 @@
-import type { Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import { createUser } from '../services/userService.js';
 import { UserProfileType } from '../types/types.js';
+import { nextTick } from 'node:process';
 
 //save user profile data to users collection
-export const registerUser = async (req: Request, res: Response) => {
+export const registerUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { uid, name, email, timezone, schedule } = req.body;
 
