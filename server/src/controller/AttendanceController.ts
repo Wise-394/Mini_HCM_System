@@ -5,6 +5,7 @@ import {
 } from '../services/attendanceService.js';
 import type { AttendanceDoc, PunchType } from '../types/types.js';
 import { Timestamp } from 'firebase-admin/firestore';
+
 export const validateAttendance = async (
   req: Request,
   res: Response,
@@ -43,8 +44,9 @@ export const validateAttendance = async (
     }
     next();
   } catch (err) {
-    if (err instanceof Error) console.error(err.message);
-    return res.status(500).json({ message: 'Failed to validate punch' });
+    if (err instanceof Error)
+      console.error('failed to validate attendanec', err.message);
+    return res.status(500).json({ message: 'Failed to validate attendance' });
   }
 };
 
@@ -71,7 +73,7 @@ export const punchAttendance = async (
   }
 };
 
-export const getLastAttendanceDocByUserController = async (
+export const getLastAttendanceByUserController = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -88,7 +90,7 @@ export const getLastAttendanceDocByUserController = async (
     return res.status(200).json({ attendance });
   } catch (err) {
     if (err instanceof Error) {
-      console.log(err.message);
+      console.log('failed to get last attendance in controller', err.message);
     }
     return res.status(500).json({ message: 'failed to retrieve attendance' });
   }

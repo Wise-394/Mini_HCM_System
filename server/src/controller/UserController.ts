@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from 'express';
-import { createUser } from '../services/userService.js';
+import { createUser, readUser } from '../services/userService.js';
 import { UserProfileType } from '../types/types.js';
 import { nextTick } from 'node:process';
 
@@ -36,9 +36,29 @@ export const registerUser = async (
       .json({ message: 'User registered successfully.', user: newUser });
   } catch (err) {
     if (err instanceof Error) {
-      console.error('registerUser error:', err);
+      console.error('registerUser error:', err.message);
     }
 
     res.status(500).json({ message: 'Failed to register user.' });
+  }
+};
+
+export const getUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    if (req.params.id !== req.user!.uid) {
+      return res.status(401).json({ message: 'unauthorized' });
+    }
+    const user: UserProfileType | null = await readUser(req.params.id);
+    return res.status(200).json({ user });
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error('registerUser error:', err.message);
+    }
+
+    res.status(500).json({ message: 'Failed to retrieve user.' });
   }
 };
