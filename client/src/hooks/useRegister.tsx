@@ -4,7 +4,6 @@ import { FirebaseError } from 'firebase/app';
 import type { User } from 'firebase/auth';
 import { auth } from '../configs/firebase.ts';
 import type { UserProfileType } from '../types/types.ts';
-import { useAuthStore } from '../store/useAuthStore.tsx';
 
 interface RegisterParams {
   password: string;
@@ -81,13 +80,8 @@ const registerUserWorkflow = async ({
 };
 
 export const useRegister = () => {
-  const login = useAuthStore((state) => state.login);
-
   const { mutateAsync, isPending, error } = useMutation({
     mutationFn: registerUserWorkflow,
-    onSuccess: (data) => {
-      login({ uid: data.user.uid, email: data.user.email! }, data.idToken);
-    },
   });
 
   return {
