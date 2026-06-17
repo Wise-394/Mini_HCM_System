@@ -3,22 +3,27 @@ import { createUserWithEmailAndPassword, getIdToken } from 'firebase/auth';
 import type { User } from 'firebase/auth';
 import { auth } from '../configs/firebase.ts';
 import type { UserProfileType } from '../types/types.ts';
+import { useAuthStore } from '../store/useAuthStore.tsx';
 
 interface RegisterParams {
   password: string;
   userProfile: Omit<UserProfileType, 'uid'>;
 }
 
-//
-//Core authentication workflow:
-//  1. Registers user in Firebase Auth
-//  2. Fetches the secure JWT ID Token
-//  3.Syncs the user profile data to the Express backend
-//
+interface RegisterResponse {
+  user: User;
+  idToken: string;
+}
+
+//Core registration workflow:
+// Creates the user in Firebase
+// Gets a secure token (JWT) from Firebase
+// Sends the user's profile data to express
+
 const registerUserWorkflow = async ({
   password,
   userProfile,
-}: RegisterParams): Promise<User> => {
+}: RegisterParams): Promise<RegisterResponse> => {
   const userCredential = await createUserWithEmailAndPassword(
     auth,
     userProfile.email,
@@ -26,7 +31,9 @@ const registerUserWorkflow = async ({
   );
   const { user } = userCredential;
   const idToken = await getIdToken(user);
-  const response = await fetch('http://localhost:5000/api/users/register', {
+  const api = import.meta.env.VITE_BACKEND_API;
+
+  const response = await fetch(`${api}/users`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -40,21 +47,20 @@ const registerUserWorkflow = async ({
 
   if (!response.ok) {
     const serverError = await response.json();
-    throw new Error(
-      serverError.message || 'Failed to save profile on backend database.'
-    );
+    throw new Error(serverError.message || 'Failed to register user.');
   }
 
-  return user;
+  return { user, idToken };
 };
 
 export const useRegister = () => {
-  const { mutateAsync, isPending, error } = useMutation<
-    User,
-    Error,
-    RegisterParams
-  >({
+  const login = useAuthStore((state) => state.login);
+
+  const { mutateAsync, isPending, error } = useMutation({
     mutationFn: registerUserWorkflow,
+    onSuccess: (data) => {
+      login(data.user, data.idToken);
+    },
   });
 
   return {

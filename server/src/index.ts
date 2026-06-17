@@ -1,14 +1,17 @@
-import express from 'express'
-import type { Request, Response } from 'express'
-const app = express()
-const PORT = process.env.PORT ?? 3000
+import './config/firebaseAdmin.js';
+import express from 'express';
+import { usersRoute } from './routes/usersRoute.js';
+import cors from 'cors';
 
-app.use(express.json())
+const app = express();
+const PORT = process.env.PORT ?? 3000;
 
-app.get('/', (req: Request, res: Response) => {
-    res.json({ message: 'API is running ' })
-})
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+app.use('/users', usersRoute);
 
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`)
-})
+  console.log(`Server running on http://localhost:${PORT}`);
+});

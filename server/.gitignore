@@ -16,3 +16,6 @@ coverage
 # Benchmarking
 benchmarks/graphs
 .env
+
+
+serviceAccountKey.json

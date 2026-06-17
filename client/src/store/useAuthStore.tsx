@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import type { User } from "firebase/auth";
+import { create } from 'zustand';
+import type { User } from 'firebase/auth';
 
 interface AuthState {
   user: User | null;
@@ -8,11 +8,9 @@ interface AuthState {
   logout: () => void;
 }
 
-const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   idToken: null,
   login: (user, idToken) => set({ user, idToken }),
   logout: () => set({ user: null, idToken: null }),
 }));
-
-export default useAuthStore;

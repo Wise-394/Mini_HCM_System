@@ -1,5 +1,30 @@
 import { Link } from 'react-router';
+import { useRegister } from '../../hooks/useRegister.tsx';
+
 export const Register = () => {
+  const { registerUser, isLoading, error } = useRegister();
+
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    await registerUser({
+      password: formData.get('password') as string,
+      userProfile: {
+        name: formData.get('name') as string,
+        email: formData.get('email') as string,
+        role: null,
+        timezone: formData.get('timezone') as string,
+        schedule: {
+          start: formData.get('schedule_start') as string,
+          end: formData.get('schedule_end') as string,
+        },
+      },
+    });
+  };
+
   return (
     <main
       className="flex min-h-[90vh] items-center justify-center bg-gray-50 p-6
@@ -16,7 +41,11 @@ export const Register = () => {
           Register Your Account
         </h1>
 
-        <form className="grid grid-cols-1 gap-6">
+        {error && (
+          <p className="mb-4 text-center text-sm text-red-500">{error}</p>
+        )}
+
+        <form className="grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div className="flex flex-col gap-2">
               <label
@@ -181,16 +210,18 @@ export const Register = () => {
           <div className="pt-2">
             <button
               type="submit"
+              disabled={isLoading}
               className="w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm
                 font-semibold text-white transition-colors hover:bg-blue-700
                 focus:ring-2 focus:ring-blue-600/40 focus:outline-none
-                hover:cursor-pointer"
+                hover:cursor-pointer disabled:opacity-50
+                disabled:cursor-not-allowed"
             >
-              Register
+              {isLoading ? 'Registering...' : 'Register'}
             </button>
           </div>
           <p className="text-center text-sm text-gray-500">
-            Already have an account?
+            Already have an account?{' '}
             <Link to="/login" className="text-blue-600 hover:underline">
               Login
             </Link>
