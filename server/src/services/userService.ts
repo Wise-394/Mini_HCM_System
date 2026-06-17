@@ -1,5 +1,5 @@
 import { getFirestore } from 'firebase-admin/firestore';
-import { UserProfileType } from '../types/types.js';
+import type { UserProfileType } from '../types/types.js';
 
 export const createUser = async (userProfile: UserProfileType) => {
   const db = getFirestore();

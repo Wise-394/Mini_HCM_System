@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import { createUser } from '../services/userService.js';
 import { UserProfileType } from '../types/types.js';
 
+//save user profile data to users collection
 export const registerUser = async (req: Request, res: Response) => {
   try {
     const { uid, name, email, timezone, schedule } = req.body;
