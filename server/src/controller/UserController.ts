@@ -1,7 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import { createUser, readUser } from '../services/userService.js';
 import { UserProfileType } from '../types/types.js';
-import { nextTick } from 'node:process';
 
 //save user profile data to users collection
 export const registerUser = async (

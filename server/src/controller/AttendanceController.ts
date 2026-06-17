@@ -1,12 +1,12 @@
 import type { Request, Response, NextFunction } from 'express';
 import {
   createAttendanceDoc,
-  getLastAttendanceDocByUser,
+  readLastAttendanceDocByUser,
 } from '../services/attendanceService.js';
 import type { AttendanceDoc, PunchType } from '../types/types.js';
 import { Timestamp } from 'firebase-admin/firestore';
 
-export const validateAttendance = async (
+export const validateAttendanceType = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -15,12 +15,7 @@ export const validateAttendance = async (
     const type = req.body.type as PunchType;
     const userId = req.user!.uid;
 
-    // type must be "in" or "out"
-    if (type !== 'in' && type !== 'out') {
-      return res.status(400).json({ message: 'Invalid punch type' });
-    }
-
-    const lastPunch = await getLastAttendanceDocByUser(userId);
+    const lastPunch = await readLastAttendanceDocByUser(userId);
     //CONDITIONS:
     //can only punch-in if last punch is null or out
     //can only punch-out if last punch is in
@@ -73,7 +68,7 @@ export const punchAttendance = async (
   }
 };
 
-export const getLastAttendanceByUserController = async (
+export const getLastAttendanceByUser = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -84,7 +79,7 @@ export const getLastAttendanceByUserController = async (
       return res.status(401).json({ message: 'unauthorized' });
     }
 
-    const attendance: AttendanceDoc | null = await getLastAttendanceDocByUser(
+    const attendance: AttendanceDoc | null = await readLastAttendanceDocByUser(
       req.user!.uid
     );
     return res.status(200).json({ attendance });

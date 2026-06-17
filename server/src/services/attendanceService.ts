@@ -6,7 +6,7 @@ export const createAttendanceDoc = async (attendanceDoc: AttendanceDoc) => {
   await db.collection('attendance').add(attendanceDoc);
 };
 
-export const getLastAttendanceDocByUser = async (
+export const readLastAttendanceDocByUser = async (
   userId: string
 ): Promise<AttendanceDoc | null> => {
   const db = getFirestore();
