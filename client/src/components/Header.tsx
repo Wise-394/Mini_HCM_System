@@ -14,9 +14,17 @@ export const Header = () => {
     <header className="p-5 flex w-full">
       <Link to="/">HCM</Link>
       {user ? (
-        <button className="ml-auto hover:cursor-pointer" onClick={handleLogout}>
-          Logout
-        </button>
+        <nav className="flex ml-auto gap-5">
+          <Link to="/home" className="hover:cursor-pointer">
+            Home
+          </Link>
+          <Link to="/home/dashboard" className="hover:cursor-pointer">
+            dashboard
+          </Link>
+          <button className="hover:cursor-pointer" onClick={handleLogout}>
+            Logout
+          </button>
+        </nav>
       ) : (
         <nav className="flex ml-auto gap-5">
           <Link to="/register">Register</Link>
