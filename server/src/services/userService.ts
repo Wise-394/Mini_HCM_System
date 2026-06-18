@@ -11,14 +11,9 @@ export const readUser = async (
   uid: string
 ): Promise<UserProfileType | null> => {
   const db = getFirestore();
-  const result = await db.collection('users').where('uid', '==', uid).get();
-  if (result.empty) {
-    return null;
-  }
-  const doc = result.docs[0];
-  const userProfile: UserProfileType = {
-    uid: doc.id,
-    ...doc.data(),
-  } as UserProfileType;
-  return userProfile;
+  const doc = await db.collection('users').doc(uid).get();
+
+  if (!doc.exists) return null;
+
+  return doc.data() as UserProfileType;
 };

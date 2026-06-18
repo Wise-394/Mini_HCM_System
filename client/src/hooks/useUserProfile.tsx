@@ -30,13 +30,12 @@ const getUserProfile = async (): Promise<UserProfileType> => {
 export const useUserProfile = () => {
   const user = useAuthStore((state) => state.user);
   const isAuthLoading = useAuthStore((state) => state.isAuthLoading);
-
   const { data, isLoading, error } = useQuery({
     queryKey: ['userProfile', user?.uid],
     queryFn: getUserProfile,
     enabled: !!user && !isAuthLoading,
     staleTime: 1000 * 60 * 10,
-    retry: false,
+    retry: 1,
     refetchOnWindowFocus: false,
   });
 
