@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createUserWithEmailAndPassword, getIdToken } from 'firebase/auth';
 import { FirebaseError } from 'firebase/app';
 import type { User } from 'firebase/auth';
@@ -80,8 +80,16 @@ const registerUser = async ({
 };
 
 export const useRegister = () => {
+  const queryClient = useQueryClient();
+
   const { mutateAsync, isPending, error } = useMutation({
     mutationFn: registerUser,
+    onSuccess: (data, variables) => {
+      queryClient.setQueryData(['userProfile', data.user.uid], {
+        uid: data.user.uid,
+        ...variables.userProfile,
+      });
+    },
   });
 
   return {

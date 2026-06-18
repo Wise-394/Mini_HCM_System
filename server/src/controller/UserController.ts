@@ -49,8 +49,10 @@ export const getUser = async (
 ) => {
   try {
     if (req.params.id !== req.user!.uid) {
+      console.log('unauthorized');
       return res.status(401).json({ message: 'unauthorized' });
     }
+
     const user: UserProfileType | null = await readUser(req.params.id);
     return res.status(200).json({ user });
   } catch (err) {

@@ -32,8 +32,8 @@ export const Home = () => {
   });
 
   const [time, period] = formattedHour.split(' ');
-  console.log({ isUserLoading, isAttendanceLoading, userError });
   const isClockedIn = lastAttendance?.type === 'in';
+
   return (
     <main className="flex items-center justify-center p-4 flex-1 bg-slate-100">
       <div
