@@ -15,11 +15,16 @@ export interface UserProfileType {
   schedule: WorkSchedule;
 }
 
+export interface FirestoreTimestamp {
+  _seconds: number;
+  _nanoseconds: number;
+}
+
 export type PunchType = 'in' | 'out';
 export interface Attendance {
   id?: string;
   userId: string;
   type: PunchType;
-  timestamp: string;
+  timestamp: string | FirestoreTimestamp;
   date: string;
 }

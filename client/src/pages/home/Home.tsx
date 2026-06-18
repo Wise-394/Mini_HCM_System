@@ -4,7 +4,7 @@ import { useLastAttendance } from '../../hooks/useLastAttendance.tsx';
 import { usePunchAttendance } from '../../hooks/usePunchAttendance.tsx';
 import { getInitials } from '../../helpers/getInitials.ts';
 import { getGreeting } from '../../helpers/getGreetings.ts';
-
+import type { FirestoreTimestamp } from '../../types/types.ts';
 export const Home = () => {
   const { userProfile, isUserLoading, userError } = useUserProfile();
   const { lastAttendance, isAttendanceLoading } = useLastAttendance();
@@ -32,9 +32,8 @@ export const Home = () => {
   });
 
   const [time, period] = formattedHour.split(' ');
-
+  console.log({ isUserLoading, isAttendanceLoading, userError });
   const isClockedIn = lastAttendance?.type === 'in';
-
   return (
     <main className="flex items-center justify-center p-4 flex-1 bg-slate-100">
       <div
@@ -94,7 +93,7 @@ export const Home = () => {
               {/* Status badge */}
               <span
                 className={`inline-flex items-center gap-1.5 text-xs px-3 py-1
-                  rounded-full mb-6 font-medium ${
+                  rounded-full mb-4 font-medium ${
                     isClockedIn
                       ? 'bg-green-50 text-green-700'
                       : 'bg-orange-50 text-orange-700'
@@ -107,6 +106,26 @@ export const Home = () => {
                 />
                 {isClockedIn ? 'Clocked In' : 'Clocked Out'}
               </span>
+
+              {/* Clock-in details */}
+              {isClockedIn && lastAttendance?.timestamp && (
+                <div
+                  className="bg-gray-50 rounded-lg px-5 py-3 mb-6 text-center
+                    w-full max-w-xs"
+                >
+                  <p className="text-xs text-gray-400 mb-1">Clocked in at</p>
+                  <p className="text-sm font-semibold text-gray-700">
+                    {new Date(
+                      (lastAttendance.timestamp as FirestoreTimestamp)
+                        ._seconds * 1000
+                    ).toLocaleTimeString('en-PH', {
+                      hour: 'numeric',
+                      minute: '2-digit',
+                      hour12: true,
+                    })}
+                  </p>
+                </div>
+              )}
 
               {/* Button */}
               <button
@@ -139,6 +158,7 @@ export const Home = () => {
   );
 };
 
+// loading state
 const HomeSkeleton = () => (
   <>
     <div className="w-24 h-24 rounded-full bg-gray-200 animate-pulse mb-5" />

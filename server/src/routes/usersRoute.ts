@@ -14,4 +14,9 @@ usersRoute.post(
 );
 usersRoute.get('/:id', verifyToken, getUser);
 
-//TODO add validation
+// TODO
+//1. Fetch attendance record for that userId + date from attendance
+// Fetch user schedule from users collection
+// Compute late, undertime, regular, OT, ND
+// Save results to dailySummary/{userId}_{date}
+// Return the summary to frontend

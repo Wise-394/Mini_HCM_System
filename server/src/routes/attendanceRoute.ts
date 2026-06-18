@@ -27,4 +27,3 @@ attendanceRouter.post(
   validateAttendanceType,
   punchAttendance
 );
-//TODO add validation
