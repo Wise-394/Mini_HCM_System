@@ -1,4 +1,44 @@
+import { useState, useEffect } from 'react';
+import { useUserProfile } from '../../hooks/useUserProfile.tsx';
+
+const getInitials = (name: string) =>
+  name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+
+const getGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) return 'Good morning';
+  if (hour < 18) return 'Good afternoon';
+  return 'Good evening';
+};
+
 export const Home = () => {
+  const { userProfile, isLoading, error } = useUserProfile();
+  const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    const interval = setInterval(() => setNow(new Date()), 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const formattedDate = now.toLocaleDateString('en-PH', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+  });
+
+  const formattedHour = now.toLocaleTimeString('en-PH', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  });
+
+  const [time, period] = formattedHour.split(' ');
+
   return (
     <main className="flex items-center justify-center p-4 flex-1 bg-slate-100">
       <div
@@ -12,12 +52,12 @@ export const Home = () => {
         >
           <div>
             <p className="text-white/60 text-xs mb-2 tracking-wide">
-              Thursday, June 18
+              {formattedDate}
             </p>
-            <p className="text-white font-light leading-none text-7xl">
-              9:31
+            <p className="text-white font-light leading-none text-6xl">
+              {time}
               <span className="text-2xl font-normal align-super ml-1 opacity-80">
-                am
+                {period.toLowerCase()}
               </span>
             </p>
           </div>
@@ -32,38 +72,61 @@ export const Home = () => {
           className="bg-white flex-1 flex flex-col items-center justify-center
             px-8 py-10"
         >
-          {/* Avatar */}
-          <div
-            className="w-24 h-24 rounded-full bg-linear-to-br from-blue-400
-              to-blue-600 flex items-center justify-center text-white text-3xl
-              font-semibold mb-5 select-none"
-          ></div>
+          {isLoading ? (
+            <HomeSkeleton />
+          ) : error ? (
+            <p className="text-sm text-red-400">{error}</p>
+          ) : (
+            <>
+              {/* Avatar */}
+              <div
+                className="w-24 h-24 rounded-full bg-linear-to-br from-blue-400
+                  to-blue-600 flex items-center justify-center text-white
+                  text-3xl font-semibold mb-5 select-none"
+              >
+                {getInitials(userProfile?.name ?? '')}
+              </div>
 
-          {/* Greeting */}
-          <h1 className="text-2xl font-bold text-gray-900">
-            Good morning, User
-          </h1>
-          <p className="text-sm text-gray-400 mt-1 mb-4">Let's get to work.</p>
+              {/* Greeting */}
+              <h1 className="text-2xl font-bold text-gray-900 text-center">
+                {getGreeting()}, {userProfile?.name}
+              </h1>
+              <p className="text-sm text-gray-400 mt-1 mb-4">
+                Let's get to work.
+              </p>
 
-          {/* Status badge */}
-          <span
-            className="inline-flex items-center gap-1.5 text-xs px-3 py-1
-              rounded-full mb-6 font-medium bg-orange-50 text-black"
-          >
-            <span className="w-2 h-2 rounded-full bg-black" />
-            In time
-          </span>
+              {/* Status badge */}
+              <span
+                className="inline-flex items-center gap-1.5 text-xs px-3 py-1
+                  rounded-full mb-6 font-medium bg-orange-50 text-black"
+              >
+                <span className="w-2 h-2 rounded-full bg-black" />
+                In time
+              </span>
 
-          {/* button */}
-          <button
-            className="w-full max-w-xs py-3.5 rounded-lg bg-blue-600
-              hover:bg-blue-700 text-white font-medium text-sm transition-colors
-              mb-2.5 hover:cursor-pointer"
-          >
-            Clock In
-          </button>
+              {/* Button */}
+              <button
+                className="w-full max-w-xs py-3.5 rounded-lg bg-blue-600
+                  hover:bg-blue-700 text-white font-medium text-sm
+                  transition-colors mb-2.5 hover:cursor-pointer"
+              >
+                Clock In
+              </button>
+            </>
+          )}
         </section>
       </div>
     </main>
   );
 };
+
+//show skeletal structure while data is loading
+const HomeSkeleton = () => (
+  <>
+    <div className="w-24 h-24 rounded-full bg-gray-200 animate-pulse mb-5" />
+    <div className="h-7 w-48 bg-gray-200 animate-pulse rounded mb-2" />
+    <div className="h-4 w-32 bg-gray-100 animate-pulse rounded mb-4" />
+    <div className="h-6 w-20 bg-gray-100 animate-pulse rounded-full mb-6" />
+    <div className="w-full max-w-xs h-12 bg-gray-200 animate-pulse rounded-lg" />
+  </>
+);
