@@ -1,37 +1,24 @@
 import { useState, useEffect } from 'react';
 import { useUserProfile } from '../../hooks/useUserProfile.tsx';
-
-const getInitials = (name: string) =>
-  name
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2);
-
-const getGreeting = () => {
-  const hour = new Date().getHours();
-  if (hour < 12) return 'Good morning';
-  if (hour < 18) return 'Good afternoon';
-  return 'Good evening';
-};
+import { getInitials } from '../../helpers/getInitials.ts';
+import { getGreeting } from '../../helpers/getGreetings.ts';
 
 export const Home = () => {
-  const { userProfile, isLoading, error } = useUserProfile();
-  const [now, setNow] = useState(new Date());
+  const { userProfile, isUserLoading, userError } = useUserProfile();
+  const [date, setDate] = useState(new Date());
 
   useEffect(() => {
-    const interval = setInterval(() => setNow(new Date()), 60000);
+    const interval = setInterval(() => setDate(new Date()), 60000);
     return () => clearInterval(interval);
   }, []);
 
-  const formattedDate = now.toLocaleDateString('en-PH', {
+  const formattedDate = date.toLocaleDateString('en-PH', {
     weekday: 'long',
     month: 'long',
     day: 'numeric',
   });
 
-  const formattedHour = now.toLocaleTimeString('en-PH', {
+  const formattedHour = date.toLocaleTimeString('en-PH', {
     hour: 'numeric',
     minute: '2-digit',
     hour12: true,
@@ -72,10 +59,10 @@ export const Home = () => {
           className="bg-white flex-1 flex flex-col items-center justify-center
             px-8 py-10"
         >
-          {isLoading ? (
+          {isUserLoading ? (
             <HomeSkeleton />
-          ) : error ? (
-            <p className="text-sm text-red-400">{error}</p>
+          ) : userError ? (
+            <p className="text-sm text-red-400">{userError}</p>
           ) : (
             <>
               {/* Avatar */}

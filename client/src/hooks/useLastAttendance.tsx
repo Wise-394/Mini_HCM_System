@@ -1,48 +1,38 @@
 import { useQuery } from '@tanstack/react-query';
-import { getIdToken } from 'firebase/auth';
 import { auth } from '../configs/firebase.ts';
-import type { UserProfileType } from '../types/types.ts';
+import { getIdToken } from 'firebase/auth';
 import { useAuthStore } from '../store/useAuthStore.tsx';
-
-const getUserProfile = async (): Promise<UserProfileType> => {
+const getLastAttendance = async () => {
+  const api = import.meta.env.VITE_BACKEND_API;
   const user = auth.currentUser;
   if (!user) throw new Error('Not authenticated');
 
   const token = await getIdToken(user);
-  const api = import.meta.env.VITE_BACKEND_API;
-
-  const res = await fetch(`${api}/users/${user.uid}`, {
+  const res = await fetch(`${api}/attendance/${user.uid}/last-punch`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-
   if (!res.ok) {
     const serverError = await res.json();
-    throw new Error(serverError.message || 'Failed to fetch profile.');
+    throw new Error(serverError.message || 'Error getting last attendance');
   }
-
   const data = await res.json();
-  return data.user;
+  return data.attendance;
 };
 
-export const useUserProfile = () => {
+export const useLastAttendance = () => {
   const user = useAuthStore((state) => state.user);
   const isAuthLoading = useAuthStore((state) => state.isAuthLoading);
-
   const { data, isLoading, error } = useQuery({
-    queryKey: ['userProfile', user?.uid],
-    queryFn: getUserProfile,
+    queryKey: ['lastAttendance', user?.uid],
+    queryFn: getLastAttendance,
     enabled: !!user && !isAuthLoading,
-    staleTime: 1000 * 60 * 10,
-    retry: false,
+    staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
+    retry: false,
   });
 
-  return {
-    userProfile: data,
-    isUserLoading: isLoading || isAuthLoading,
-    userError: error?.message || null,
-  };
+  return { lastAttendance: data, isLoading: isLoading || isAuthLoading, error };
 };
