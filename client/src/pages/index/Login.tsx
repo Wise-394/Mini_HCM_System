@@ -17,13 +17,14 @@ export const Login = () => {
 
   return (
     <main
-      className="flex min-h-[90vh] items-center justify-center bg-gray-50 p-6
+      className="flex flex-1 items-center justify-center bg-gray-50 p-6
         font-sans"
     >
       <section
         className="w-full max-w-md rounded-xl border border-gray-100 bg-white
           p-8 shadow-sm"
       >
+        {/* Title */}
         <h1
           className="mb-8 text-center text-2xl font-bold tracking-tight
             text-gray-900"
@@ -32,6 +33,7 @@ export const Login = () => {
         </h1>
 
         <form className="grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
+          {/* Email field */}
           <div className="flex flex-col gap-2">
             <label
               htmlFor="email"
@@ -51,6 +53,7 @@ export const Login = () => {
             />
           </div>
 
+          {/* Password field */}
           <div className="flex flex-col gap-2">
             <label
               htmlFor="password"
@@ -70,10 +73,12 @@ export const Login = () => {
             />
           </div>
 
+          {/* Error message */}
           {error && (
             <p className="mb-4 text-center text-sm text-red-500">{error}</p>
           )}
 
+          {/* Submit button */}
           <div className="pt-2">
             <button
               type="submit"
@@ -88,6 +93,7 @@ export const Login = () => {
             </button>
           </div>
 
+          {/* Register link */}
           <p className="text-center text-sm text-gray-500">
             Don't have an account?
             <Link to="/register" className="text-blue-600 hover:underline">

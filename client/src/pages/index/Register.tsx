@@ -52,13 +52,14 @@ export const Register = () => {
 
   return (
     <main
-      className="flex min-h-[90vh] items-center justify-center bg-gray-50 p-6
+      className="flex flex-1 items-center justify-center bg-gray-50 p-6
         font-sans"
     >
       <section
         className="w-full max-w-2xl rounded-xl border border-gray-100 bg-white
           p-8 shadow-sm"
       >
+        {/* Title */}
         <h1
           className="mb-8 text-center text-2xl font-bold tracking-tight
             text-gray-900"
@@ -67,6 +68,7 @@ export const Register = () => {
         </h1>
 
         <form className="grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
+          {/* Full name & email fields */}
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div className="flex flex-col gap-2">
               <label
@@ -88,6 +90,7 @@ export const Register = () => {
               />
             </div>
 
+            {/* Email field */}
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="email"
@@ -109,6 +112,7 @@ export const Register = () => {
             </div>
           </div>
 
+          {/* Password & repeat password fields */}
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div className="flex flex-col gap-2">
               <label
@@ -130,6 +134,7 @@ export const Register = () => {
               />
             </div>
 
+            {/* Repeat password field */}
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="repeat-password"
@@ -151,6 +156,7 @@ export const Register = () => {
             </div>
           </div>
 
+          {/* Timezone dropdown */}
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div className="flex flex-col gap-2">
               <label
@@ -177,6 +183,7 @@ export const Register = () => {
             </div>
           </div>
 
+          {/* Shift schedule fieldset */}
           <div className="flex flex-col gap-2">
             <fieldset className="m-0 rounded-lg border border-gray-200 p-6">
               <legend
@@ -186,6 +193,7 @@ export const Register = () => {
                 Shift Schedule
               </legend>
 
+              {/* Start & end time fields */}
               <div className="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="flex flex-col gap-2">
                   <label
@@ -207,6 +215,7 @@ export const Register = () => {
                   />
                 </div>
 
+                {/* End time field */}
                 <div className="flex flex-col gap-2">
                   <label
                     htmlFor="end-time"
@@ -230,12 +239,14 @@ export const Register = () => {
             </fieldset>
           </div>
 
+          {/* Error message */}
           {displayError && (
             <p className="mb-4 text-center text-sm text-red-500">
               {displayError}
             </p>
           )}
 
+          {/* Submit button */}
           <div className="pt-2">
             <button
               type="submit"
@@ -249,6 +260,8 @@ export const Register = () => {
               {isLoading ? 'Registering...' : 'Register'}
             </button>
           </div>
+
+          {/* Login link */}
           <p className="text-center text-sm text-gray-500">
             Already have an account?{' '}
             <Link to="/login" className="text-blue-600 hover:underline">
