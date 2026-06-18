@@ -10,6 +10,9 @@ export const Home = () => {
   const { lastAttendance, isAttendanceLoading } = useLastAttendance();
   const { punchAttendance, isPunchLoading } = usePunchAttendance();
   const [date, setDate] = useState(new Date());
+  const today = date.toLocaleDateString('en-PH', { timeZone: 'Asia/Manila' });
+  const isDoneForToday =
+    lastAttendance?.type === 'out' && lastAttendance?.date === today;
 
   useEffect(() => {
     const interval = setInterval(() => setDate(new Date()), 60000);
@@ -107,22 +110,26 @@ export const Home = () => {
 
               {/* Button */}
               <button
-                disabled={isPunchLoading}
+                disabled={isPunchLoading || isDoneForToday}
                 onClick={() => punchAttendance(isClockedIn ? 'out' : 'in')}
                 className={`w-full max-w-xs py-3.5 rounded-lg text-white
                   font-medium text-sm transition-colors mb-2.5
                   hover:cursor-pointer disabled:opacity-50
                   disabled:cursor-not-allowed ${
-                    isClockedIn
-                      ? 'bg-red-500 hover:bg-red-600'
-                      : 'bg-blue-600 hover:bg-blue-700'
+                    isDoneForToday
+                      ? 'bg-gray-400'
+                      : isClockedIn
+                        ? 'bg-red-500 hover:bg-red-600'
+                        : 'bg-blue-600 hover:bg-blue-700'
                   }`}
               >
                 {isPunchLoading
                   ? 'Processing...'
-                  : isClockedIn
-                    ? 'Clock Out'
-                    : 'Clock In'}
+                  : isDoneForToday
+                    ? 'Done for today'
+                    : isClockedIn
+                      ? 'Clock Out'
+                      : 'Clock In'}
               </button>
             </>
           )}

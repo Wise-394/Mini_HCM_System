@@ -14,11 +14,14 @@ export const validateAttendanceType = async (
   try {
     const type = req.body.type as PunchType;
     const userId = req.user!.uid;
-
+    const today = new Date().toLocaleDateString('en-PH', {
+      timeZone: 'Asia/Manila',
+    });
     const lastPunch = await readLastAttendanceDocByUser(userId);
     //CONDITIONS:
     //can only punch-in if last punch is null or out
     //can only punch-out if last punch is in
+    //can only punch in and punch out 1 times a day
     //the rest -> decline all
     if (lastPunch === null && type !== 'in') {
       return res
@@ -37,6 +40,16 @@ export const validateAttendanceType = async (
         .status(400)
         .json({ message: 'Already punched out, punch in first' });
     }
+
+    if (
+      lastPunch?.type === 'out' &&
+      lastPunch?.date === today &&
+      type === 'in'
+    ) {
+      return res
+        .status(400)
+        .json({ message: 'Already completed attendance for today' });
+    }
     next();
   } catch (err) {
     if (err instanceof Error)
@@ -54,7 +67,7 @@ export const punchAttendance = async (
     const type = req.body.type as PunchType;
     const attendance: AttendanceDoc = {
       userId: req.user!.uid,
-      date: new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' }),
+      date: new Date().toLocaleDateString('en-PH', { timeZone: 'Asia/Manila' }),
       timestamp: Timestamp.now(),
       type: type,
     };
