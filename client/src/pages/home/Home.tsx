@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useUserProfile } from '../../hooks/useUserProfile.tsx';
+import { useLastAttendance } from '../../hooks/useLastAttendance.tsx';
+import { usePunchAttendance } from '../../hooks/usePunchAttendance.tsx';
 import { getInitials } from '../../helpers/getInitials.ts';
 import { getGreeting } from '../../helpers/getGreetings.ts';
 
 export const Home = () => {
   const { userProfile, isUserLoading, userError } = useUserProfile();
+  const { lastAttendance, isAttendanceLoading } = useLastAttendance();
+  const { punchAttendance, isPunchLoading } = usePunchAttendance();
   const [date, setDate] = useState(new Date());
 
   useEffect(() => {
@@ -25,6 +29,8 @@ export const Home = () => {
   });
 
   const [time, period] = formattedHour.split(' ');
+
+  const isClockedIn = lastAttendance?.type === 'in';
 
   return (
     <main className="flex items-center justify-center p-4 flex-1 bg-slate-100">
@@ -59,7 +65,7 @@ export const Home = () => {
           className="bg-white flex-1 flex flex-col items-center justify-center
             px-8 py-10"
         >
-          {isUserLoading ? (
+          {isUserLoading || isAttendanceLoading ? (
             <HomeSkeleton />
           ) : userError ? (
             <p className="text-sm text-red-400">{userError}</p>
@@ -84,20 +90,39 @@ export const Home = () => {
 
               {/* Status badge */}
               <span
-                className="inline-flex items-center gap-1.5 text-xs px-3 py-1
-                  rounded-full mb-6 font-medium bg-orange-50 text-black"
+                className={`inline-flex items-center gap-1.5 text-xs px-3 py-1
+                  rounded-full mb-6 font-medium ${
+                    isClockedIn
+                      ? 'bg-green-50 text-green-700'
+                      : 'bg-orange-50 text-orange-700'
+                  }`}
               >
-                <span className="w-2 h-2 rounded-full bg-black" />
-                In time
+                <span
+                  className={`w-2 h-2 rounded-full ${
+                    isClockedIn ? 'bg-green-500' : 'bg-orange-400'
+                  }`}
+                />
+                {isClockedIn ? 'Clocked In' : 'Clocked Out'}
               </span>
 
               {/* Button */}
               <button
-                className="w-full max-w-xs py-3.5 rounded-lg bg-blue-600
-                  hover:bg-blue-700 text-white font-medium text-sm
-                  transition-colors mb-2.5 hover:cursor-pointer"
+                disabled={isPunchLoading}
+                onClick={() => punchAttendance(isClockedIn ? 'out' : 'in')}
+                className={`w-full max-w-xs py-3.5 rounded-lg text-white
+                  font-medium text-sm transition-colors mb-2.5
+                  hover:cursor-pointer disabled:opacity-50
+                  disabled:cursor-not-allowed ${
+                    isClockedIn
+                      ? 'bg-red-500 hover:bg-red-600'
+                      : 'bg-blue-600 hover:bg-blue-700'
+                  }`}
               >
-                Clock In
+                {isPunchLoading
+                  ? 'Processing...'
+                  : isClockedIn
+                    ? 'Clock Out'
+                    : 'Clock In'}
               </button>
             </>
           )}
@@ -107,7 +132,6 @@ export const Home = () => {
   );
 };
 
-//show skeletal structure while data is loading
 const HomeSkeleton = () => (
   <>
     <div className="w-24 h-24 rounded-full bg-gray-200 animate-pulse mb-5" />

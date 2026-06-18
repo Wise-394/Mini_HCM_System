@@ -29,7 +29,7 @@ const FIREBASE_ERROR_MESSAGES: Record<string, string> = {
 //if backend fails to save profile data
 //delete user in firebase and restart registration (to prevent user with no database record)
 
-const registerUserWorkflow = async ({
+const registerUser = async ({
   password,
   userProfile,
 }: RegisterParams): Promise<RegisterResponse> => {
@@ -81,7 +81,7 @@ const registerUserWorkflow = async ({
 
 export const useRegister = () => {
   const { mutateAsync, isPending, error } = useMutation({
-    mutationFn: registerUserWorkflow,
+    mutationFn: registerUser,
   });
 
   return {

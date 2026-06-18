@@ -14,3 +14,12 @@ export interface UserProfileType {
   timezone: string;
   schedule: WorkSchedule;
 }
+
+export type PunchType = 'in' | 'out';
+export interface Attendance {
+  id?: string;
+  userId: string;
+  type: PunchType;
+  timestamp: string;
+  date: string;
+}

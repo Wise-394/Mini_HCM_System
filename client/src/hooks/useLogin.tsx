@@ -17,7 +17,7 @@ const FIREBASE_ERROR_MESSAGES: Record<string, string> = {
 
 // Core login workflow:
 // Authenticates credentials via Firebase
-const loginUserWorkflow = async ({ email, password }: LoginParams) => {
+const loginUser = async ({ email, password }: LoginParams) => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
   } catch (err) {
@@ -32,7 +32,7 @@ const loginUserWorkflow = async ({ email, password }: LoginParams) => {
 
 export const useLogin = () => {
   const { mutateAsync, isPending, error } = useMutation({
-    mutationFn: loginUserWorkflow,
+    mutationFn: loginUser,
   });
 
   return {

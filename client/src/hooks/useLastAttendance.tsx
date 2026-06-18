@@ -2,7 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 import { auth } from '../configs/firebase.ts';
 import { getIdToken } from 'firebase/auth';
 import { useAuthStore } from '../store/useAuthStore.tsx';
-const getLastAttendance = async () => {
+import type { Attendance } from '../types/types.ts';
+
+const getLastAttendance = async (): Promise<Attendance> => {
   const api = import.meta.env.VITE_BACKEND_API;
   const user = auth.currentUser;
   if (!user) throw new Error('Not authenticated');
@@ -34,5 +36,9 @@ export const useLastAttendance = () => {
     retry: false,
   });
 
-  return { lastAttendance: data, isLoading: isLoading || isAuthLoading, error };
+  return {
+    lastAttendance: data,
+    isAttendanceLoading: isLoading || isAuthLoading,
+    error,
+  };
 };
