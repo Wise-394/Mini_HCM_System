@@ -3,7 +3,6 @@ import { verifyToken } from '../middleware/verifyToken.js';
 import {
   getLastAttendanceByUser,
   punchAttendance,
-  validateAttendanceType,
 } from '../controller/AttendanceController.js';
 import { validateAttendance } from '../middleware/validation.js';
 import { handleValidationErrors } from '../middleware/handleValidationErrors.js';
@@ -24,6 +23,5 @@ attendanceRouter.post(
   verifyToken,
   validateAttendance,
   handleValidationErrors,
-  validateAttendanceType,
   punchAttendance
 );

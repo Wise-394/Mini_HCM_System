@@ -7,11 +7,34 @@ export const createAttendanceDoc = async (attendanceDoc: AttendanceDoc) => {
   await db.collection('attendance').add(attendanceDoc);
 };
 
-export const readLastAttendanceDocByUser = async (
+// Intentionally has NO staleness filter — used to find and resolve
+// dangling punch-ins regardless of how old they are.
+// Do NOT refactor to reuse getActiveSession here.
+export const readUnresolvedPunchIn = async (
   userId: string
 ): Promise<AttendanceDoc | null> => {
   const db = getFirestore();
-  const MAX_SHIFT_HOURS = 20; //buffer for long shifts/OT before treating an open 'in' as incomplete
+  const result = await db
+    .collection('attendance')
+    .where('userId', '==', userId)
+    .orderBy('timestamp', 'desc')
+    .limit(1)
+    .get();
+
+  if (result.empty) return null;
+  const doc = result.docs[0];
+  const lastPunch = { id: doc.id, ...doc.data() } as AttendanceDoc;
+  return lastPunch.type === 'in' ? lastPunch : null;
+};
+
+// Returns the user's active punch-in session, or null if none exists
+// or the last punch-in is older than MAX_SHIFT_HOURS (treated as expired)
+export const getActiveSession = async (
+  userId: string
+): Promise<AttendanceDoc | null> => {
+  const db = getFirestore();
+  const MAX_SHIFT_HOURS = 20;
+
   const result = await db
     .collection('attendance')
     .where('userId', '==', userId)
@@ -27,9 +50,7 @@ export const readLastAttendanceDocByUser = async (
   if (lastPunch.type === 'in') {
     const hoursSince =
       (Date.now() - lastPunch.timestamp.toMillis()) / (1000 * 60 * 60);
-    if (hoursSince > MAX_SHIFT_HOURS) {
-      return null;
-    }
+    if (hoursSince > MAX_SHIFT_HOURS) return null;
   }
 
   return lastPunch;
@@ -40,42 +61,31 @@ export const readAttendanceOfUserByDate = async (
   date: string
 ): Promise<DailyAttendance> => {
   const db = getFirestore();
-  const result = await db
+  const baseQuery = db
     .collection('attendance')
     .where('userId', '==', userId)
-    .where('date', '==', date)
-    .limit(2)
-    .get();
+    .where('date', '==', date);
 
-  const docs = result.docs.map(
-    (doc) =>
-      ({
-        id: doc.id,
-        ...doc.data(),
-      }) as AttendanceDoc
-  );
+  const [inResult, outResult] = await Promise.all([
+    baseQuery
+      .where('type', '==', 'in')
+      .orderBy('timestamp', 'asc')
+      .limit(1)
+      .get(),
+    baseQuery
+      .where('type', '==', 'out')
+      .orderBy('timestamp', 'asc')
+      .limit(1)
+      .get(),
+  ]);
+
+  const toDoc = (snap: typeof inResult) =>
+    snap.empty
+      ? null
+      : ({ id: snap.docs[0].id, ...snap.docs[0].data() } as AttendanceDoc);
 
   return {
-    in: docs.find((d) => d.type === 'in') ?? null,
-    out: docs.find((d) => d.type === 'out') ?? null,
+    in: toDoc(inResult),
+    out: toDoc(outResult),
   };
-};
-
-export const readUnresolvedPunchIn = async (
-  userId: string
-): Promise<AttendanceDoc | null> => {
-  const db = getFirestore();
-  const result = await db
-    .collection('attendance')
-    .where('userId', '==', userId)
-    .orderBy('timestamp', 'desc')
-    .limit(1)
-    .get();
-
-  if (result.empty) return null;
-
-  const doc = result.docs[0];
-  const lastPunch = { id: doc.id, ...doc.data() } as AttendanceDoc;
-
-  return lastPunch.type === 'in' ? lastPunch : null;
 };

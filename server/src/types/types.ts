@@ -39,3 +39,7 @@ export interface DailySummary {
   lateMinutes: number | null;
   undertimeMinutes: number | null;
 }
+
+export type AttendanceValidationResult =
+  | { allowed: true }
+  | { allowed: false; reason: string };

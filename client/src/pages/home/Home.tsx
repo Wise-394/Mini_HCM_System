@@ -10,7 +10,7 @@ export const Home = () => {
   const { lastAttendance, isAttendanceLoading } = useLastAttendance();
   const { punchAttendance, isPunchLoading } = usePunchAttendance();
   const [date, setDate] = useState(new Date());
-  const today = date.toLocaleDateString('en-PH', { timeZone: 'Asia/Manila' });
+  const today = date.toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });
   const isDoneForToday =
     lastAttendance?.type === 'out' && lastAttendance?.date === today;
 
