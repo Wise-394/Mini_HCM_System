@@ -15,3 +15,5 @@ export const useAuthStore = create<AuthState>((set) => ({
   logout: () => set({ user: null }),
   setAuthLoading: (value) => set({ isAuthLoading: value }),
 }));
+
+// TODO ADD NAME

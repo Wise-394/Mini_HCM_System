@@ -2,7 +2,6 @@ import type { NextFunction, Request, Response } from 'express';
 import { createUser, readUser } from '../services/userService.js';
 import { UserProfileType } from '../types/types.js';
 
-//save user profile data to users collection
 export const registerUser = async (
   req: Request,
   res: Response,
@@ -37,7 +36,6 @@ export const registerUser = async (
     if (err instanceof Error) {
       console.error('registerUser error:', err.message);
     }
-
     res.status(500).json({ message: 'Failed to register user.' });
   }
 };
@@ -49,17 +47,22 @@ export const getUser = async (
 ) => {
   try {
     if (req.params.id !== req.user!.uid) {
-      console.log('unauthorized');
-      return res.status(401).json({ message: 'unauthorized' });
+      return res.status(403).json({ message: 'Unauthorized access.' });
     }
 
     const user: UserProfileType | null = await readUser(req.params.id);
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: 'User profile data does not exist.' });
+    }
+
     return res.status(200).json({ user });
   } catch (err) {
     if (err instanceof Error) {
-      console.error('registerUser error:', err.message);
+      console.error('getUser error:', err.message);
     }
-
     res.status(500).json({ message: 'Failed to retrieve user.' });
   }
 };
