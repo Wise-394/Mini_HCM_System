@@ -11,9 +11,14 @@ export const readLastAttendanceDocByUser = async (
   userId: string
 ): Promise<AttendanceDoc | null> => {
   const db = getFirestore();
+  const today = new Date().toLocaleDateString('en-PH', {
+    timeZone: 'Asia/Manila',
+  });
+
   const result = await db
     .collection('attendance')
     .where('userId', '==', userId)
+    .where('date', '==', today)
     .orderBy('timestamp', 'desc')
     .limit(1)
     .get();
@@ -21,11 +26,10 @@ export const readLastAttendanceDocByUser = async (
   if (result.empty) return null;
 
   const doc = result.docs[0];
-  const attendance: AttendanceDoc = {
+  return {
     id: doc.id,
     ...doc.data(),
   } as AttendanceDoc;
-  return attendance;
 };
 
 export const readAttendanceOfUserByDate = async (
