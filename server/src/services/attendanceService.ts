@@ -60,3 +60,22 @@ export const readAttendanceOfUserByDate = async (
     out: docs.find((d) => d.type === 'out') ?? null,
   };
 };
+
+export const readUnresolvedPunchIn = async (
+  userId: string
+): Promise<AttendanceDoc | null> => {
+  const db = getFirestore();
+  const result = await db
+    .collection('attendance')
+    .where('userId', '==', userId)
+    .orderBy('timestamp', 'desc')
+    .limit(1)
+    .get();
+
+  if (result.empty) return null;
+
+  const doc = result.docs[0];
+  const lastPunch = { id: doc.id, ...doc.data() } as AttendanceDoc;
+
+  return lastPunch.type === 'in' ? lastPunch : null;
+};

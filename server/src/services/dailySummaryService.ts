@@ -1,66 +1,22 @@
-import { readAttendanceOfUserByDate } from './attendanceService.js';
-import { readUser } from './userService.js';
-import {
-  calculateLateMinutes,
-  calculateUndertimeMinutes,
-  calculateHoursWorked,
-  calculateRegularHours,
-  calculateOvertimeHours,
-  calculateNightDifferentialHours,
-} from '../services/utils/dailyAttendanceCalculation.js';
+import { getFirestore } from 'firebase-admin/firestore';
 import type { DailySummary } from '../types/types.js';
 
-export const computeDailySummary = async (
+export const saveDailySummary = async (summary: DailySummary) => {
+  const db = getFirestore();
+  const docId = `${summary.userId}_${summary.date}`;
+  await db.collection('dailySummary').doc(docId).set(summary);
+  return summary;
+};
+
+export const readDailySummary = async (
   userId: string,
   date: string
-): Promise<DailySummary> => {
-  const [{ in: punchIn, out: punchOut }, profile] = await Promise.all([
-    readAttendanceOfUserByDate(userId, date),
-    readUser(userId),
-  ]);
+): Promise<DailySummary | null> => {
+  const db = getFirestore();
+  const docId = `${userId}_${date}`;
+  const doc = await db.collection('dailySummary').doc(docId).get();
 
-  // TODO: handle profile === null (user not found)
-  const schedule = profile!.schedule;
+  if (!doc.exists) return null;
 
-  let status: DailySummary['status'];
-  let hoursWorked: number | null = null;
-  let regularHours: number | null = null;
-  let overtimeHours: number | null = null;
-  let nightDifferentialHours: number | null = null;
-  let lateMinutes: number | null = null;
-  let undertimeMinutes: number | null = null;
-
-  if (!punchIn && !punchOut) {
-    status = 'absent';
-    // all metrics stay null — nothing was worked
-  } else if (punchIn && !punchOut) {
-    status = 'incomplete';
-    lateMinutes = calculateLateMinutes(punchIn, schedule);
-    // hoursWorked/regular/OT/undertime/ND stay null until punchOut exists
-  } else {
-    status = 'present';
-    hoursWorked = calculateHoursWorked(punchIn!, punchOut!);
-    regularHours = calculateRegularHours(hoursWorked, schedule);
-    overtimeHours = calculateOvertimeHours(hoursWorked, schedule);
-    nightDifferentialHours = calculateNightDifferentialHours(
-      punchIn!,
-      punchOut!
-    );
-    lateMinutes = calculateLateMinutes(punchIn!, schedule);
-    undertimeMinutes = calculateUndertimeMinutes(punchOut!, schedule);
-  }
-
-  return {
-    userId,
-    date,
-    punchIn,
-    punchOut,
-    status,
-    hoursWorked,
-    regularHours,
-    overtimeHours,
-    nightDifferentialHours,
-    lateMinutes,
-    undertimeMinutes,
-  };
+  return doc.data() as DailySummary;
 };

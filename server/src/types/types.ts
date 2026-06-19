@@ -31,8 +31,6 @@ export interface DailyAttendance {
 export interface DailySummary {
   userId: string;
   date: string;
-  punchIn: AttendanceDoc | null;
-  punchOut: AttendanceDoc | null;
   status: 'present' | 'absent' | 'incomplete';
   hoursWorked: number | null;
   regularHours: number | null;
