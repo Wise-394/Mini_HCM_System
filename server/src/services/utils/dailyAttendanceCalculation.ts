@@ -1,57 +1,143 @@
 import type { AttendanceDoc, WorkSchedule } from '../../types/types.js';
+import { DateTime } from 'luxon';
 
-// 1
+const MANILA_TZ = 'Asia/Manila';
+
+// ── Helpers ──────────────────────────────────────────
+
+const roundHours = (hours: number): number => Math.round(hours * 100) / 100;
+
+const parseTimeToMinutes = (time: string): number => {
+  const [hours, minutes] = time.split(':').map(Number);
+  return hours * 60 + minutes;
+};
+
+const getShiftLengthHours = (schedule: WorkSchedule): number => {
+  const startMinutes = parseTimeToMinutes(schedule.start);
+  let endMinutes = parseTimeToMinutes(schedule.end);
+
+  if (endMinutes <= startMinutes) {
+    endMinutes += 24 * 60;
+  }
+
+  return (endMinutes - startMinutes) / 60;
+};
+
+// ── Computation functions ───────────────────────────
+
 export const calculateHoursWorked = (
   punchIn: AttendanceDoc,
   punchOut: AttendanceDoc
 ): number => {
   const diffMs = punchOut.timestamp.toMillis() - punchIn.timestamp.toMillis();
   const hours = diffMs / (1000 * 60 * 60);
-  return Math.max(0, hours);
+  return roundHours(Math.max(0, hours));
 };
-// 2
+
 export const calculateRegularHours = (
   hoursWorked: number,
   schedule: WorkSchedule
 ): number => {
-  // TODO: min(hoursWorked, scheduled shift length)
-  return 0;
+  const shiftLength = getShiftLengthHours(schedule);
+  return roundHours(Math.min(hoursWorked, shiftLength));
 };
 
-// 3
 export const calculateOvertimeHours = (
   hoursWorked: number,
   schedule: WorkSchedule
 ): number => {
-  // TODO: max(0, hoursWorked - scheduled shift length)
-  return 0;
+  const shiftLength = getShiftLengthHours(schedule);
+  return roundHours(Math.max(0, hoursWorked - shiftLength));
 };
 
-// 4
 export const calculateLateMinutes = (
   punchIn: AttendanceDoc,
   schedule: WorkSchedule
 ): number => {
-  // TODO: compare punchIn.timestamp against schedule.start (same date)
-  // return max(0, punchIn - scheduledStart) in minutes
-  return 0;
+  const punchInDt = DateTime.fromMillis(punchIn.timestamp.toMillis(), {
+    zone: MANILA_TZ,
+  });
+
+  const [startHour, startMinute] = schedule.start.split(':').map(Number);
+  const scheduledStart = punchInDt.set({
+    hour: startHour,
+    minute: startMinute,
+    second: 0,
+    millisecond: 0,
+  });
+
+  const diffMinutes = punchInDt.diff(scheduledStart, 'minutes').minutes;
+  return Math.max(0, Math.round(diffMinutes));
 };
 
-// 5
 export const calculateUndertimeMinutes = (
   punchOut: AttendanceDoc,
   schedule: WorkSchedule
 ): number => {
-  // TODO: compare punchOut.timestamp against schedule.end (same date)
-  // return max(0, scheduledEnd - punchOut) in minutes
-  return 0;
+  const punchOutDt = DateTime.fromMillis(punchOut.timestamp.toMillis(), {
+    zone: MANILA_TZ,
+  });
+
+  const [endHour, endMinute] = schedule.end.split(':').map(Number);
+  const scheduledEnd = punchOutDt.set({
+    hour: endHour,
+    minute: endMinute,
+    second: 0,
+    millisecond: 0,
+  });
+
+  const diffMinutes = scheduledEnd.diff(punchOutDt, 'minutes').minutes;
+  return Math.max(0, Math.round(diffMinutes));
 };
 
-// 6
 export const calculateNightDifferentialHours = (
   punchIn: AttendanceDoc,
   punchOut: AttendanceDoc
 ): number => {
-  // TODO: overlap of [punchIn, punchOut] with 22:00–06:00 window
-  return 0;
+  const sessionStart = DateTime.fromMillis(punchIn.timestamp.toMillis(), {
+    zone: MANILA_TZ,
+  });
+  const sessionEnd = DateTime.fromMillis(punchOut.timestamp.toMillis(), {
+    zone: MANILA_TZ,
+  });
+
+  // helper: hours of the session that fall inside a given window
+  const hoursInWindow = (
+    windowStart: DateTime,
+    windowEnd: DateTime
+  ): number => {
+    const overlapStart =
+      sessionStart > windowStart ? sessionStart : windowStart;
+    const overlapEnd = sessionEnd < windowEnd ? sessionEnd : windowEnd;
+    const diffMs = overlapEnd.toMillis() - overlapStart.toMillis();
+    return Math.max(0, diffMs / (1000 * 60 * 60));
+  };
+
+  // window A: 22:00 on punchIn's date → 06:00 next day
+  const windowAStart = sessionStart.set({
+    hour: 22,
+    minute: 0,
+    second: 0,
+    millisecond: 0,
+  });
+  const windowAEnd = windowAStart
+    .plus({ days: 1 })
+    .set({ hour: 6, minute: 0, second: 0, millisecond: 0 });
+
+  // window B: 22:00 previous day → 06:00 on punchIn's date
+  const windowBEnd = sessionStart.set({
+    hour: 6,
+    minute: 0,
+    second: 0,
+    millisecond: 0,
+  });
+  const windowBStart = windowBEnd
+    .minus({ days: 1 })
+    .set({ hour: 22, minute: 0, second: 0, millisecond: 0 });
+
+  const totalNightDifferentialHours =
+    hoursInWindow(windowAStart, windowAEnd) +
+    hoursInWindow(windowBStart, windowBEnd);
+
+  return roundHours(totalNightDifferentialHours);
 };

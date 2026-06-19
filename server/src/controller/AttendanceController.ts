@@ -54,9 +54,25 @@ export const punchAttendance = async (
 ) => {
   try {
     const type = req.body.type as PunchType;
+    const today = new Date().toLocaleDateString('en-PH', {
+      timeZone: 'Asia/Manila',
+    });
+
+    let date = today;
+
+    // for punch-out, reuse the matching punch-in's date instead of today's
+    // calendar date — keeps overnight shifts (e.g. 10pm-6am) as one shift
+    // under a single date instead of splitting across two calendar days
+    if (type === 'out') {
+      const lastPunch = await readLastAttendanceDocByUser(req.user!.uid);
+      if (lastPunch?.type === 'in') {
+        date = lastPunch.date;
+      }
+    }
+
     const attendance: AttendanceDoc = {
       userId: req.user!.uid,
-      date: new Date().toLocaleDateString('en-PH', { timeZone: 'Asia/Manila' }),
+      date,
       timestamp: Timestamp.now(),
       type: type,
     };

@@ -11,14 +11,10 @@ export const readLastAttendanceDocByUser = async (
   userId: string
 ): Promise<AttendanceDoc | null> => {
   const db = getFirestore();
-  const today = new Date().toLocaleDateString('en-PH', {
-    timeZone: 'Asia/Manila',
-  });
-
+  const MAX_SHIFT_HOURS = 20; //buffer for long shifts/OT before treating an open 'in' as incomplete
   const result = await db
     .collection('attendance')
     .where('userId', '==', userId)
-    .where('date', '==', today)
     .orderBy('timestamp', 'desc')
     .limit(1)
     .get();
@@ -26,10 +22,17 @@ export const readLastAttendanceDocByUser = async (
   if (result.empty) return null;
 
   const doc = result.docs[0];
-  return {
-    id: doc.id,
-    ...doc.data(),
-  } as AttendanceDoc;
+  const lastPunch = { id: doc.id, ...doc.data() } as AttendanceDoc;
+
+  if (lastPunch.type === 'in') {
+    const hoursSince =
+      (Date.now() - lastPunch.timestamp.toMillis()) / (1000 * 60 * 60);
+    if (hoursSince > MAX_SHIFT_HOURS) {
+      return null;
+    }
+  }
+
+  return lastPunch;
 };
 
 export const readAttendanceOfUserByDate = async (
