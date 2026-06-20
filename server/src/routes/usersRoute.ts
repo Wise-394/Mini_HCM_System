@@ -7,11 +7,12 @@ export const usersRouter = Router();
 
 // POST   /api/users                  → register a new user profile
 // GET    /api/users/:userId          → get user profile by their user ID
+
+usersRouter.use(verifyToken);
 usersRouter.post(
   '/',
-  verifyToken,
   validateUserProfile,
   handleValidationErrors,
   registerUser
 );
-usersRouter.get('/:userId', verifyToken, getUser);
+usersRouter.get('/:userId', getUser);

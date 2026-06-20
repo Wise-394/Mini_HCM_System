@@ -5,6 +5,7 @@ import { usersRouter } from './routes/usersRoute.js';
 import { errorRouter } from './routes/errorRoute.js';
 import { attendanceRouter } from './routes/attendanceRoute.js';
 import { dailySummaryRouter } from './routes/dailySummaryRoute.js';
+import { seedDatabaseIfEmpty } from './services/seedDatabaseService.js';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -12,6 +13,7 @@ const PORT = process.env.PORT ?? 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+await seedDatabaseIfEmpty();
 
 app.use('/users', usersRouter);
 app.use('/attendance', attendanceRouter);
