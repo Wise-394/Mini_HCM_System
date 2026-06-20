@@ -71,23 +71,12 @@ export const calculateLateMinutes = (
 };
 
 export const calculateUndertimeMinutes = (
-  punchOut: AttendanceDoc,
+  hoursWorked: number,
   schedule: WorkSchedule
 ): number => {
-  const punchOutDt = DateTime.fromMillis(punchOut.timestamp.toMillis(), {
-    zone: MANILA_TZ,
-  });
-
-  const [endHour, endMinute] = schedule.end.split(':').map(Number);
-  const scheduledEnd = punchOutDt.set({
-    hour: endHour,
-    minute: endMinute,
-    second: 0,
-    millisecond: 0,
-  });
-
-  const diffMinutes = scheduledEnd.diff(punchOutDt, 'minutes').minutes;
-  return Math.max(0, Math.round(diffMinutes));
+  const shiftLengthMinutes = getShiftLengthHours(schedule) * 60;
+  const workedMinutes = hoursWorked * 60;
+  return Math.max(0, Math.round(shiftLengthMinutes - workedMinutes));
 };
 
 export const calculateNightDifferentialHours = (

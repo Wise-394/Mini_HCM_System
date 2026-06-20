@@ -46,7 +46,7 @@ const DailySummaryItem = ({
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       className={`px-4 py-2.5 sm:px-6 sm:py-4 ${GRID} cursor-pointer
-        transition-colors hover:bg-slate-50 ${isSelected ? 'bg-blue-50' : ''}`}
+        transition-colors hover:bg-blue-100 ${isSelected ? 'bg-blue-200' : ''}`}
     >
       <p
         className="col-span-3 sm:col-span-1 font-semibold text-slate-900 text-xs

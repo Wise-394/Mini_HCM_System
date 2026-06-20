@@ -44,7 +44,7 @@ export const computeDailySummary = async (
     overtimeHours = calculateOvertimeHours(hoursWorked, schedule);
     nightDifferentialHours = calculateNightDifferentialHours(punchIn, punchOut);
     lateMinutes = calculateLateMinutes(punchIn, schedule);
-    undertimeMinutes = calculateUndertimeMinutes(punchOut, schedule);
+    undertimeMinutes = calculateUndertimeMinutes(hoursWorked, schedule);
   } else {
     status = 'incomplete';
   }

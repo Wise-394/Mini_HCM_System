@@ -1,170 +1,179 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useUserProfile } from '../../hooks/useUserProfile.ts';
 import { useLastPunchAttendance } from '../../hooks/useLastPunchAttendance.ts';
 import { usePunchAttendance } from '../../hooks/usePunchAttendance.ts';
 import { getInitials } from '../../helpers/getInitials.ts';
 import { getGreeting } from '../../helpers/getGreetings.ts';
-import type { FirestoreTimestamp } from '../../types/types.ts';
+import { formatClock } from '../../helpers/formats.ts';
+
 export const Home = () => {
   const { userProfile, isUserLoading, userError } = useUserProfile();
   const { lastAttendance, isAttendanceLoading } = useLastPunchAttendance();
   const { punchAttendance, isPunchLoading } = usePunchAttendance();
-  const [date, setDate] = useState(new Date());
-  const today = date.toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });
-  const isDoneForToday =
-    lastAttendance?.type === 'out' && lastAttendance?.date === today;
+
+  const [now, setNow] = useState(() => new Date());
+  const [today, setToday] = useState(() =>
+    new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' })
+  );
 
   useEffect(() => {
-    const interval = setInterval(() => setDate(new Date()), 60000);
+    const interval = setInterval(() => {
+      const next = new Date();
+      setNow(next);
+      const nextDay = next.toLocaleDateString('en-CA', {
+        timeZone: 'Asia/Manila',
+      });
+      setToday((prev) => (prev !== nextDay ? nextDay : prev));
+    }, 1000);
     return () => clearInterval(interval);
   }, []);
 
-  const formattedDate = date.toLocaleDateString('en-PH', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-  });
+  const formattedDate = useMemo(
+    () =>
+      new Date(`${today}T00:00:00`).toLocaleDateString('en-PH', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+      }),
+    [today]
+  );
 
-  const formattedHour = date.toLocaleTimeString('en-PH', {
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true,
-  });
+  const greeting = useMemo(() => getGreeting(), []);
+  const initials = useMemo(
+    () => getInitials(userProfile?.name ?? ''),
+    [userProfile?.name]
+  );
+  const scheduleLabel = useMemo(
+    () =>
+      userProfile?.schedule
+        ? `${userProfile.schedule.start} – ${userProfile.schedule.end}`
+        : '—',
+    [userProfile?.schedule]
+  );
 
-  const [time, period] = formattedHour.split(' ');
+  const isDoneForToday =
+    lastAttendance?.type === 'out' && lastAttendance?.date === today;
   const isClockedIn = lastAttendance?.type === 'in';
 
   return (
-    <main className="flex items-center justify-center p-4 flex-1 bg-slate-100">
+    <main
+      className="flex-1 flex items-center justify-center p-4 sm:p-6 bg-slate-100
+        shadow-lg"
+    >
       <div
-        className="flex flex-col md:flex-row w-full max-w-3xl rounded-2xl
-          overflow-hidden shadow-lg border border-white"
+        className="w-full max-w-md bg-white rounded-2xl sm:rounded-3xl border
+          border-slate-200"
       >
-        {/* Sidebar */}
-        <aside
-          className="bg-gray-700 flex flex-row md:flex-col justify-between
-            md:w-60 p-6 md:p-9"
-        >
-          <div>
-            <p className="text-white/60 text-xs mb-2 tracking-wide">
-              {formattedDate}
-            </p>
-            <p className="text-white font-light leading-none text-6xl">
-              {time}
-              <span className="text-2xl font-normal align-super ml-1 opacity-80">
-                {period.toLowerCase()}
-              </span>
-            </p>
-          </div>
-          <div className="md:mt-auto text-right md:text-left">
-            <p className="text-white text-sm font-semibold">Sample Company</p>
-            <p className="text-white/50 text-xs mt-0.5">Main Office · Manila</p>
-          </div>
-        </aside>
-
-        {/* Main */}
-        <section
-          className="bg-white flex-1 flex flex-col items-center justify-center
-            px-8 py-10"
-        >
-          {isUserLoading || isAttendanceLoading ? (
-            <HomeSkeleton />
-          ) : userError ? (
-            <p className="text-sm text-red-400">{userError}</p>
-          ) : (
-            <>
-              {/* Avatar */}
-              <div
-                className="w-24 h-24 rounded-full bg-linear-to-br from-blue-400
-                  to-blue-600 flex items-center justify-center text-white
-                  text-3xl font-semibold mb-5 select-none"
-              >
-                {getInitials(userProfile?.name ?? '')}
-              </div>
-
-              {/* Greeting */}
-              <h1 className="text-2xl font-bold text-gray-900 text-center">
-                {getGreeting()}, {userProfile?.name}
-              </h1>
-              <p className="text-sm text-gray-400 mt-1 mb-4">
-                Let's get to work.
-              </p>
-
-              {/* Status badge */}
-              <span
-                className={`inline-flex items-center gap-1.5 text-xs px-3 py-1
-                  rounded-full mb-4 font-medium ${
-                    isClockedIn
-                      ? 'bg-green-50 text-green-700'
-                      : 'bg-orange-50 text-orange-700'
-                  }`}
-              >
-                <span
-                  className={`w-2 h-2 rounded-full ${
-                    isClockedIn ? 'bg-green-500' : 'bg-orange-400'
-                  }`}
-                />
-                {isClockedIn ? 'Clocked In' : 'Clocked Out'}
-              </span>
-
-              {/* Clock-in details */}
-              {isClockedIn && lastAttendance?.timestamp && (
+        {isUserLoading || isAttendanceLoading ? (
+          <HomeSkeleton />
+        ) : userError ? (
+          <p className="text-sm text-red-400 text-center p-10">{userError}</p>
+        ) : (
+          <div className="p-6 sm:p-9">
+            {/* Header */}
+            <div
+              className="flex items-center justify-between gap-3 mb-7 sm:mb-8
+                flex-wrap"
+            >
+              <div className="flex items-center gap-3 sm:gap-3.5">
                 <div
-                  className="bg-gray-50 rounded-lg px-5 py-3 mb-6 text-center
-                    w-full max-w-xs"
+                  className="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-blue-100
+                    flex items-center justify-center text-blue-700 text-sm
+                    sm:text-base font-medium select-none shrink-0"
                 >
-                  <p className="text-xs text-gray-400 mb-1">Clocked in at</p>
-                  <p className="text-sm font-semibold text-gray-700">
-                    {new Date(
-                      (lastAttendance.timestamp as FirestoreTimestamp)
-                        ._seconds * 1000
-                    ).toLocaleTimeString('en-PH', {
-                      hour: 'numeric',
-                      minute: '2-digit',
-                      hour12: true,
-                    })}
+                  {initials}
+                </div>
+                <div>
+                  <p
+                    className="text-sm sm:text-base font-medium text-slate-900
+                      leading-none"
+                  >
+                    {userProfile?.name}
+                  </p>
+                  <p className="text-xs sm:text-sm text-slate-400 mt-1">
+                    Sample Company · Manila
                   </p>
                 </div>
-              )}
+              </div>
+            </div>
 
-              {/* Button */}
-              <button
-                disabled={isPunchLoading || isDoneForToday}
-                onClick={() => punchAttendance(isClockedIn ? 'out' : 'in')}
-                className={`w-full max-w-xs py-3.5 rounded-lg text-white
-                  font-medium text-sm transition-colors mb-2.5
-                  hover:cursor-pointer disabled:opacity-50
-                  disabled:cursor-not-allowed ${
-                    isDoneForToday
-                      ? 'bg-gray-400'
-                      : isClockedIn
-                        ? 'bg-red-500 hover:bg-red-600'
-                        : 'bg-blue-600 hover:bg-blue-700'
-                  }`}
+            {/* Clock */}
+            <div className="mb-7 sm:mb-8">
+              <p className="text-xs sm:text-sm text-slate-400 mb-1.5">
+                {formattedDate}
+              </p>
+              <span
+                className="text-4xl sm:text-5xl font-medium text-slate-900
+                  leading-none tabular-nums"
               >
-                {isPunchLoading
-                  ? 'Processing...'
-                  : isDoneForToday
-                    ? 'Done for today'
+                {formatClock(now)}
+              </span>
+            </div>
+
+            {/* Schedule */}
+            <div className="bg-slate-50 rounded-xl px-4 py-3.5 mb-7 sm:mb-8">
+              <p className="text-xs text-slate-400 mb-1">Schedule</p>
+              <p className="text-sm font-medium text-slate-800">
+                {scheduleLabel}
+              </p>
+            </div>
+
+            {/* Message */}
+            <p className="text-sm text-slate-400 leading-relaxed mb-5">
+              {isDoneForToday
+                ? "You're all done for today. Great work!"
+                : isClockedIn
+                  ? `${greeting}! remember to clock out when done.`
+                  : `${greeting}! You haven't clocked in yet.`}
+            </p>
+
+            {/* Button */}
+            <button
+              disabled={isPunchLoading || isDoneForToday}
+              onClick={() => punchAttendance(isClockedIn ? 'out' : 'in')}
+              className={`w-full py-3.5 rounded-xl text-white text-sm
+                font-medium transition-colors cursor-pointer disabled:opacity-50
+                disabled:cursor-not-allowed ${
+                  isDoneForToday
+                    ? 'bg-slate-400'
                     : isClockedIn
-                      ? 'Clock Out'
-                      : 'Clock In'}
-              </button>
-            </>
-          )}
-        </section>
+                      ? 'bg-red-500 hover:bg-red-600'
+                      : 'bg-blue-600 hover:bg-blue-700'
+                }`}
+            >
+              {isPunchLoading
+                ? 'Processing…'
+                : isDoneForToday
+                  ? 'Done for today'
+                  : isClockedIn
+                    ? 'Clock Out'
+                    : 'Clock In'}
+            </button>
+          </div>
+        )}
       </div>
     </main>
   );
 };
 
-// loading state
 const HomeSkeleton = () => (
-  <>
-    <div className="w-24 h-24 rounded-full bg-gray-200 animate-pulse mb-5" />
-    <div className="h-7 w-48 bg-gray-200 animate-pulse rounded mb-2" />
-    <div className="h-4 w-32 bg-gray-100 animate-pulse rounded mb-4" />
-    <div className="h-6 w-20 bg-gray-100 animate-pulse rounded-full mb-6" />
-    <div className="w-full max-w-xs h-12 bg-gray-200 animate-pulse rounded-lg" />
-  </>
+  <div className="p-6 sm:p-9 space-y-6">
+    <div className="flex items-center gap-3.5">
+      <div
+        className="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-slate-200
+          animate-pulse shrink-0"
+      />
+      <div className="space-y-2">
+        <div className="h-4 w-32 bg-slate-200 animate-pulse rounded" />
+        <div className="h-3 w-24 bg-slate-100 animate-pulse rounded" />
+      </div>
+    </div>
+    <div className="space-y-2">
+      <div className="h-3 w-36 bg-slate-100 animate-pulse rounded" />
+      <div className="h-10 w-44 bg-slate-200 animate-pulse rounded" />
+    </div>
+    <div className="h-16 w-full bg-slate-100 animate-pulse rounded-xl" />
+    <div className="h-3.5 w-full bg-slate-100 animate-pulse rounded" />
+    <div className="h-12 w-full bg-slate-200 animate-pulse rounded-xl" />
+  </div>
 );
