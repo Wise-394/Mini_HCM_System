@@ -29,6 +29,11 @@ export interface Attendance {
   date: string;
 }
 
+export interface DailyAttendance {
+  in: Attendance | null;
+  out: Attendance | null;
+}
+
 export interface DailySummary {
   date: string; // ISO date
   regularHrs: number;

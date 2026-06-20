@@ -1,19 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { HiOutlineClock, HiOutlineBuildingOffice2 } from 'react-icons/hi2';
 import type { WorkSchedule, UserRole } from '../../../types/types.ts';
-
-// ---- Helpers ---------------------------------------------------------
-// Move this into helpers/formats.ts if you've already got a clock formatter
-// there — kept local for now to avoid guessing at a duplicate.
-
-const formatClock = (date: Date) =>
-  date.toLocaleTimeString('en-PH', {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  });
-
-// ---- PunchClockCard ----------------------------------------------------
+import { useAttendance } from '../../../hooks/useAttendance.tsx';
+import { useUserProfile } from '../../../hooks/useUserProfile.tsx';
+import { formatClock, formatTimestamp } from '../../../helpers/formats.ts';
 
 interface PunchClockCardProps {
   now: Date;
@@ -21,6 +11,46 @@ interface PunchClockCardProps {
   clockIn: string | null;
   clockOut: string | null;
 }
+
+export const PunchClockPanel = () => {
+  const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const today = useMemo(() => new Date().toISOString().split('T')[0], []); //prevent tanstack to refetch for each useEffectUpdate
+  const { attendance } = useAttendance(today);
+  const { userProfile } = useUserProfile();
+
+  const clockIn = formatTimestamp(attendance?.in?.timestamp as string);
+  const clockOut = formatTimestamp(attendance?.out?.timestamp as string);
+
+  const statusLabel = !attendance?.in
+    ? 'Awaiting punch'
+    : !attendance?.out
+      ? 'Clocked in'
+      : 'Clocked out';
+
+  return (
+    <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <PunchClockCard
+        now={now}
+        statusLabel={statusLabel}
+        clockIn={clockIn}
+        clockOut={clockOut}
+      />
+      {userProfile && (
+        <ScheduleCard
+          schedule={userProfile.schedule}
+          timezone={userProfile.timezone}
+          role={userProfile.role}
+        />
+      )}
+    </section>
+  );
+};
 
 const PunchClockCard = ({
   now,
@@ -112,34 +142,5 @@ const ScheduleCard = ({ schedule, timezone, role }: ScheduleCardProps) => {
         {timezone} · {role}
       </p>
     </div>
-  );
-};
-
-export const PunchClockPanel = () => {
-  const [now, setNow] = useState(new Date());
-
-  useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  // TODO: replace with TanStack Query once wired up
-  const statusLabel = 'Awaiting punch';
-  const clockIn: string | null = null;
-  const clockOut: string | null = null;
-  const schedule: WorkSchedule = { start: '09:00', end: '18:00' };
-  const timezone = 'Asia/Manila';
-  const role: UserRole | null = 'employee';
-
-  return (
-    <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <PunchClockCard
-        now={now}
-        statusLabel={statusLabel}
-        clockIn={clockIn}
-        clockOut={clockOut}
-      />
-      <ScheduleCard schedule={schedule} timezone={timezone} role={role} />
-    </section>
   );
 };

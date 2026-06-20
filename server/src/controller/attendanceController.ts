@@ -3,7 +3,10 @@ import {
   validatePunch,
   processPunch,
 } from '../services/attendanceDomainService.js';
-import { readActiveSession } from '../services/attendanceService.js';
+import {
+  readActiveSession,
+  readAttendanceOfUserByDate,
+} from '../services/attendanceService.js';
 import type { PunchType } from '../types/types.js';
 
 export const punchAttendance = async (req: Request, res: Response) => {
@@ -29,7 +32,10 @@ export const punchAttendance = async (req: Request, res: Response) => {
   }
 };
 
-export const getLastAttendanceByUser = async (req: Request, res: Response) => {
+export const getLastPunchAttendanceByUser = async (
+  req: Request,
+  res: Response
+) => {
   try {
     if (req.params.userId !== req.user!.uid) {
       return res.status(401).json({ message: 'Unauthorized' });
@@ -40,5 +46,34 @@ export const getLastAttendanceByUser = async (req: Request, res: Response) => {
   } catch (err) {
     if (err instanceof Error) console.error(err.message);
     return res.status(500).json({ message: 'Failed to retrieve attendance' });
+  }
+};
+
+export const getAttendanceOfUserByDate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    if (req.params.userId !== req.user!.uid) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const { userId, date } = req.params;
+
+    if (typeof date !== 'string') {
+      return res
+        .status(400)
+        .json({ message: 'Invalid or missing date parameter' });
+    }
+
+    const attendance = await readAttendanceOfUserByDate(userId, date);
+
+    return res.status(200).json({ data: attendance });
+  } catch (err) {
+    if (err instanceof Error) console.error(err.message);
+    return res
+      .status(500)
+      .json({ message: 'Failed to retrieve attendance for today' });
   }
 };

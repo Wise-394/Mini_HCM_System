@@ -35,6 +35,9 @@ export const usePunchAttendance = () => {
       queryClient.invalidateQueries({
         queryKey: ['lastAttendance', user?.uid],
       });
+      queryClient.invalidateQueries({
+        queryKey: ['attendance', user?.uid],
+      });
     },
   });
 
