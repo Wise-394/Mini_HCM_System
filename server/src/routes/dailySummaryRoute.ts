@@ -5,10 +5,14 @@ import {
   getUserDailySummaryByDate,
 } from '../controller/dailySummaryController.js';
 
-export const dailySummary = Router();
+export const dailySummaryRouter = Router();
 
 // GET    /api/daily-summaries/:userId/:date                   → get daily summary of user in specific date
 // GET    /api/daily-summaries/:userId?offset=0&limit=10       → get daily summary history of user based on offset and limit
 
-dailySummary.get('/:userId/:date', verifyToken, getUserDailySummaryByDate);
-dailySummary.get('/:userId', verifyToken, getUserDailySummaryHistory);
+dailySummaryRouter.get(
+  '/:userId/:date',
+  verifyToken,
+  getUserDailySummaryByDate
+);
+dailySummaryRouter.get('/:userId', verifyToken, getUserDailySummaryHistory);

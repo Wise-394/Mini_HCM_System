@@ -6,51 +6,45 @@ import {
   HiOutlineMoon,
   HiOutlineExclamationTriangle,
 } from 'react-icons/hi2';
-import type { DailySummary } from '../../../types/types.ts';
-
-const TODAY_SUMMARY: DailySummary = {
-  date: '2026-06-20',
-  regularHrs: 6.4,
-  otHrs: 0,
-  ndHrs: 0,
-  lateMins: 0,
-  undertimeMins: 0,
-};
-
-const kpis = [
-  {
-    label: 'Regular Hours',
-    value: formatHrs(TODAY_SUMMARY.regularHrs),
-    icon: HiOutlineCheckCircle,
-    accent: 'text-emerald-600',
-  },
-  {
-    label: 'Overtime',
-    value: formatHrs(TODAY_SUMMARY.otHrs),
-    icon: HiOutlineArrowTrendingUp,
-    accent: 'text-blue-600',
-  },
-  {
-    label: 'Night Diff',
-    value: formatHrs(TODAY_SUMMARY.ndHrs),
-    icon: HiOutlineMoon,
-    accent: 'text-indigo-600',
-  },
-  {
-    label: 'Late',
-    value: formatMins(TODAY_SUMMARY.lateMins),
-    icon: HiOutlineExclamationTriangle,
-    accent: 'text-amber-600',
-  },
-  {
-    label: 'Undertime',
-    value: formatMins(TODAY_SUMMARY.undertimeMins),
-    icon: HiOutlineArrowTrendingDown,
-    accent: 'text-rose-600',
-  },
-];
+import { useDailySummary } from '../../../hooks/useDailySummary.ts';
 
 export const TodayDailySummary = () => {
+  const today = new Date().toISOString().split('T')[0];
+  const { dailySummary, isDailySummaryLoading } = useDailySummary(today);
+
+  const kpis = [
+    {
+      label: 'Regular Hours',
+      value: formatHrs(dailySummary?.regularHours ?? 0),
+      icon: HiOutlineCheckCircle,
+      accent: 'text-emerald-600',
+    },
+    {
+      label: 'Overtime',
+      value: formatHrs(dailySummary?.overtimeHours ?? 0),
+      icon: HiOutlineArrowTrendingUp,
+      accent: 'text-blue-600',
+    },
+    {
+      label: 'Night Diff',
+      value: formatHrs(dailySummary?.nightDifferentialHours ?? 0),
+      icon: HiOutlineMoon,
+      accent: 'text-indigo-600',
+    },
+    {
+      label: 'Late',
+      value: formatMins(dailySummary?.lateMinutes ?? 0),
+      icon: HiOutlineExclamationTriangle,
+      accent: 'text-amber-600',
+    },
+    {
+      label: 'Undertime',
+      value: formatMins(dailySummary?.undertimeMinutes ?? 0),
+      icon: HiOutlineArrowTrendingDown,
+      accent: 'text-rose-600',
+    },
+  ];
+
   return (
     <section>
       <h2 className="text-sm font-bold text-slate-900 mb-3">Today's Summary</h2>
@@ -68,11 +62,19 @@ export const TodayDailySummary = () => {
               <Icon className="w-5 h-5" />
             </div>
             <div>
-              <p
-                className="text-xl font-extrabold text-slate-900 tracking-tight"
-              >
-                {value}
-              </p>
+              {isDailySummaryLoading ? (
+                <div
+                  className="h-7 w-16 bg-slate-200 rounded-md animate-pulse
+                    mb-1"
+                />
+              ) : (
+                <p
+                  className="text-xl font-extrabold text-slate-900
+                    tracking-tight"
+                >
+                  {value}
+                </p>
+              )}
               <p className="text-xs font-medium text-gray-400">{label}</p>
             </div>
           </div>

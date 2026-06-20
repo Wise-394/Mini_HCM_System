@@ -1,8 +1,11 @@
 import { HiOutlineCalendarDays } from 'react-icons/hi2';
 import type { DailySummary } from '../../../types/types.ts';
-import { formatMins } from '../../../helpers/formats.ts';
-import { formatDateLabel } from '../../../helpers/formats.ts';
-import { formatHrs } from '../../../helpers/formats.ts';
+import {
+  formatMins,
+  formatDateLabel,
+  formatHrs,
+} from '../../../helpers/formats.ts';
+import { useDailySummaryHistory } from '../../../hooks/useDailySummaryHistory.ts';
 
 interface DailySummaryItemProps {
   day: DailySummary;
@@ -16,12 +19,20 @@ const DailySummaryItem = ({ day, variant }: DailySummaryItemProps) => {
         <td className="px-6 py-4 font-semibold text-slate-900">
           {formatDateLabel(day.date)}
         </td>
-        <td className="px-4 py-4 text-gray-500">{formatHrs(day.regularHrs)}</td>
-        <td className="px-4 py-4 text-gray-500">{formatHrs(day.otHrs)}</td>
-        <td className="px-4 py-4 text-gray-500">{formatHrs(day.ndHrs)}</td>
-        <td className="px-4 py-4 text-gray-500">{formatMins(day.lateMins)}</td>
         <td className="px-4 py-4 text-gray-500">
-          {formatMins(day.undertimeMins)}
+          {formatHrs(day.regularHours)}
+        </td>
+        <td className="px-4 py-4 text-gray-500">
+          {formatHrs(day.overtimeHours)}
+        </td>
+        <td className="px-4 py-4 text-gray-500">
+          {formatHrs(day.nightDifferentialHours)}
+        </td>
+        <td className="px-4 py-4 text-gray-500">
+          {formatMins(day.lateMinutes)}
+        </td>
+        <td className="px-4 py-4 text-gray-500">
+          {formatMins(day.undertimeMinutes)}
         </td>
       </tr>
     );
@@ -35,23 +46,25 @@ const DailySummaryItem = ({ day, variant }: DailySummaryItemProps) => {
       <div className="grid grid-cols-4 gap-2 text-xs">
         <div>
           <p className="font-semibold text-slate-900">
-            {formatHrs(day.regularHrs)}
+            {formatHrs(day.regularHours)}
           </p>
           <p className="text-gray-400">Reg</p>
         </div>
         <div>
-          <p className="font-semibold text-slate-900">{formatHrs(day.otHrs)}</p>
+          <p className="font-semibold text-slate-900">
+            {formatHrs(day.overtimeHours)}
+          </p>
           <p className="text-gray-400">OT</p>
         </div>
         <div>
           <p className="font-semibold text-slate-900">
-            {formatMins(day.lateMins)}
+            {formatMins(day.lateMinutes)}
           </p>
           <p className="text-gray-400">Late</p>
         </div>
         <div>
           <p className="font-semibold text-slate-900">
-            {formatMins(day.undertimeMins)}
+            {formatMins(day.undertimeMinutes)}
           </p>
           <p className="text-gray-400">UT</p>
         </div>
@@ -63,16 +76,16 @@ const DailySummaryItem = ({ day, variant }: DailySummaryItemProps) => {
 // ---- DailySummaryList ----------------------------------------------------
 
 export const DailySummaryList = () => {
-  // TODO: replace with TanStack Query once wired up
-  const days: DailySummary[] = [];
+  const { summaryHistory, isSummaryHistoryLoading } = useDailySummaryHistory();
 
   return (
     <section
       className="bg-white rounded-2xl border border-white shadow-lg
         overflow-hidden"
     >
-      <div className="px-6 py-5 flex items-center gap-3 border-b
-        border-gray-100">
+      <div
+        className="px-6 py-5 flex items-center gap-3 border-b border-gray-100"
+      >
         <div
           className="w-9 h-9 rounded-xl bg-slate-100 text-gray-600 flex
             items-center justify-center"
@@ -106,18 +119,48 @@ export const DailySummaryList = () => {
             </tr>
           </thead>
           <tbody>
-            {days.map((day) => (
-              <DailySummaryItem key={day.date} day={day} variant="row" />
-            ))}
+            {isSummaryHistoryLoading ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="px-6 py-8 text-center text-gray-400 text-sm"
+                >
+                  Loading...
+                </td>
+              </tr>
+            ) : summaryHistory.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="px-6 py-8 text-center text-gray-400 text-sm"
+                >
+                  No attendance records found.
+                </td>
+              </tr>
+            ) : (
+              summaryHistory.map((day) => (
+                <DailySummaryItem key={day.date} day={day} variant="row" />
+              ))
+            )}
           </tbody>
         </table>
       </div>
 
       {/* Mobile cards */}
       <div className="sm:hidden divide-y divide-gray-100">
-        {days.map((day) => (
-          <DailySummaryItem key={day.date} day={day} variant="card" />
-        ))}
+        {isSummaryHistoryLoading ? (
+          <p className="px-6 py-8 text-center text-gray-400 text-sm">
+            Loading...
+          </p>
+        ) : summaryHistory.length === 0 ? (
+          <p className="px-6 py-8 text-center text-gray-400 text-sm">
+            No attendance records found.
+          </p>
+        ) : (
+          summaryHistory.map((day) => (
+            <DailySummaryItem key={day.date} day={day} variant="card" />
+          ))
+        )}
       </div>
     </section>
   );

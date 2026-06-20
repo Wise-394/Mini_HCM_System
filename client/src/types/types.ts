@@ -6,7 +6,6 @@ export interface WorkSchedule {
 }
 
 export interface UserProfileType {
-  //before registering, uid is null, uid is assigned by firebase automatically
   uid?: string;
   name: string;
   email: string;
@@ -35,10 +34,24 @@ export interface DailyAttendance {
 }
 
 export interface DailySummary {
-  date: string; // ISO date
-  regularHrs: number;
-  otHrs: number;
-  ndHrs: number;
-  lateMins: number;
-  undertimeMins: number;
+  date: string;
+  regularHours: number;
+  overtimeHours: number;
+  nightDifferentialHours: number;
+  lateMinutes: number;
+  undertimeMinutes: number;
+  hoursWorked: number;
+  status: string;
+  userId: string;
+}
+
+export interface PaginationMeta {
+  offset: number;
+  limit: number;
+  total: number;
+}
+
+export interface DailySummaryHistoryResponse {
+  data: DailySummary[];
+  pagination: PaginationMeta;
 }
