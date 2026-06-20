@@ -8,7 +8,7 @@ import {
 } from 'react-icons/hi2';
 import { useDailySummary } from '../../../hooks/useDailySummary.ts';
 
-export const TodayDailySummary = () => {
+export const DailySummaryByDate = () => {
   const today = new Date().toISOString().split('T')[0];
   const { dailySummary, isDailySummaryLoading } = useDailySummary(today);
 
