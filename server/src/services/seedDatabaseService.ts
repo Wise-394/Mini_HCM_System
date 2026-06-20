@@ -26,9 +26,9 @@ export const seedDatabaseIfEmpty = async () => {
     const users = [
       {
         uid: 'user-001',
-        name: 'employee',
-        email: 'admin@company.com',
-        role: 'admin',
+        name: 'Jhenn Rod',
+        email: 'jhenn@company.com',
+        role: 'employee',
         timezone: 'Asia/Manila',
         schedule: { start: '09:00', end: '18:00' },
       },
@@ -75,11 +75,18 @@ export const seedDatabaseIfEmpty = async () => {
 
     const attendance = [
       {
-        id: 'att-001',
-        userId: 'user-002',
+        id: 'att-021',
+        userId: 'user-001',
         type: 'in',
-        date: '2026-06-16',
-        timestamp: Timestamp.fromDate(new Date('2026-06-16T09:00:00+08:00')),
+        date: '2026-06-20',
+        timestamp: Timestamp.fromDate(new Date('2026-06-20T09:00:00+08:00')),
+      },
+      {
+        id: 'att-022',
+        userId: 'user-001',
+        type: 'out',
+        date: '2026-06-20',
+        timestamp: Timestamp.fromDate(new Date('2026-06-20T18:00:00+08:00')),
       },
       {
         id: 'att-002',
@@ -223,6 +230,17 @@ export const seedDatabaseIfEmpty = async () => {
 
     const dailySummaries = [
       {
+        userId: 'user-001',
+        date: '2026-06-20',
+        status: 'present',
+        hoursWorked: 9,
+        regularHours: 9,
+        overtimeHours: 0,
+        nightDifferentialHours: 0,
+        lateMinutes: 0,
+        undertimeMinutes: 0,
+      },
+      {
         userId: 'user-002',
         date: '2026-06-16',
         status: 'present',
@@ -334,7 +352,6 @@ export const seedDatabaseIfEmpty = async () => {
       },
     ];
 
-    // Uses the custom format '${userId}_${date}' as the document key name
     dailySummaries.forEach((ds) => {
       const customDocId = `${ds.userId}_${ds.date}`;
       const ref = db.collection('dailySummary').doc(customDocId);
