@@ -31,7 +31,7 @@ export const registerUser = async (
 
     res
       .status(201)
-      .json({ message: 'User registered successfully.', user: newUser });
+      .json({ message: 'User registered successfully.', data: newUser });
   } catch (err) {
     if (err instanceof Error) {
       console.error('registerUser error:', err.message);
@@ -46,11 +46,11 @@ export const getUser = async (
   next: NextFunction
 ) => {
   try {
-    if (req.params.id !== req.user!.uid) {
+    if (req.params.userId !== req.user!.uid) {
       return res.status(403).json({ message: 'Unauthorized access.' });
     }
 
-    const user: UserProfileType | null = await readUser(req.params.id);
+    const user: UserProfileType | null = await readUser(req.params.userId);
 
     if (!user) {
       return res
@@ -58,7 +58,7 @@ export const getUser = async (
         .json({ message: 'User profile data does not exist.' });
     }
 
-    return res.status(200).json({ user });
+    return res.status(200).json({ data: user });
   } catch (err) {
     if (err instanceof Error) {
       console.error('getUser error:', err.message);

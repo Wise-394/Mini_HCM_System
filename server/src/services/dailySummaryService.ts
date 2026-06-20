@@ -20,3 +20,23 @@ export const readDailySummary = async (
 
   return doc.data() as DailySummary;
 };
+
+export const readDailySummaryHistory = async (
+  userId: string,
+  limit: number,
+  offset: number
+): Promise<DailySummary[]> => {
+  const db = getFirestore();
+
+  const result = await db
+    .collection('dailySummary')
+    .where('userId', '==', userId)
+    .orderBy('date', 'desc')
+    .limit(limit)
+    .offset(offset)
+    .get();
+
+  if (result.empty) return [];
+
+  return result.docs.map((doc) => doc.data() as DailySummary);
+};

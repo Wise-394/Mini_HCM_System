@@ -28,7 +28,7 @@ const getUserProfile = async (
   }
 
   const data = await res.json();
-  return data.user;
+  return data.data;
 };
 
 export const useUserProfile = () => {

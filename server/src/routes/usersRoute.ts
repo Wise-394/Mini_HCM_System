@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getUser, registerUser } from '../controller/UserController.js';
+import { getUser, registerUser } from '../controller/userController.js';
 import { verifyToken } from '../middleware/verifyToken.js';
 import { validateUserProfile } from '../middleware/validation.js';
 import { handleValidationErrors } from '../middleware/handleValidationErrors.js';
@@ -12,4 +12,4 @@ usersRoute.post(
   handleValidationErrors,
   registerUser
 );
-usersRoute.get('/:id', verifyToken, getUser);
+usersRoute.get('/:userId', verifyToken, getUser);

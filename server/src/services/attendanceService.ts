@@ -9,7 +9,6 @@ export const createAttendanceDoc = async (attendanceDoc: AttendanceDoc) => {
 
 // Intentionally has NO staleness filter — used to find and resolve
 // dangling punch-ins regardless of how old they are.
-// Do NOT refactor to reuse getActiveSession here.
 export const readUnresolvedPunchIn = async (
   userId: string
 ): Promise<AttendanceDoc | null> => {
@@ -29,7 +28,7 @@ export const readUnresolvedPunchIn = async (
 
 // Returns the user's active punch-in session, or null if none exists
 // or the last punch-in is older than MAX_SHIFT_HOURS (treated as expired)
-export const getActiveSession = async (
+export const readActiveSession = async (
   userId: string
 ): Promise<AttendanceDoc | null> => {
   const db = getFirestore();

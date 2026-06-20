@@ -1,6 +1,6 @@
 import {
   createAttendanceDoc,
-  getActiveSession,
+  readActiveSession,
   readUnresolvedPunchIn,
   readAttendanceOfUserByDate,
 } from './attendanceService.js';
@@ -20,7 +20,7 @@ export const validatePunch = async (
   type: PunchType
 ): Promise<PunchValidationError> => {
   const today = getTodayManila();
-  const lastPunch = await getActiveSession(userId);
+  const lastPunch = await readActiveSession(userId);
 
   const sequenceCheck = validatePunchSequence(lastPunch, type, today);
   if (!sequenceCheck.allowed) {
@@ -49,7 +49,7 @@ export const processPunch = async (
 
   if (type === 'out') {
     // reuse punch-in's date to keep overnight shifts under a single date
-    const lastPunch = await getActiveSession(userId);
+    const lastPunch = await readActiveSession(userId);
     if (lastPunch?.type === 'in') {
       date = lastPunch.date;
     }

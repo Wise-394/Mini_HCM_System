@@ -1,9 +1,9 @@
-import type { Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import {
   validatePunch,
   processPunch,
 } from '../services/attendanceDomainService.js';
-import { getActiveSession } from '../services/attendanceService.js';
+import { readActiveSession } from '../services/attendanceService.js';
 import type { PunchType } from '../types/types.js';
 
 export const punchAttendance = async (req: Request, res: Response) => {
@@ -35,8 +35,8 @@ export const getLastAttendanceByUser = async (req: Request, res: Response) => {
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const attendance = await getActiveSession(req.user!.uid);
-    return res.status(200).json({ attendance });
+    const attendance = await readActiveSession(req.user!.uid);
+    return res.status(200).json({ data: attendance });
   } catch (err) {
     if (err instanceof Error) console.error(err.message);
     return res.status(500).json({ message: 'Failed to retrieve attendance' });

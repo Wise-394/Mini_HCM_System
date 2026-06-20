@@ -21,7 +21,7 @@ const getLastAttendance = async (): Promise<Attendance> => {
     throw new Error(serverError.message || 'Error getting last attendance');
   }
   const data = await res.json();
-  return data.attendance;
+  return data.data;
 };
 
 export const useLastAttendance = () => {
