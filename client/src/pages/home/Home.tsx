@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useUserProfile } from '../../hooks/useUserProfile.tsx';
-import { useLastAttendance } from '../../hooks/useLastAttendance.tsx';
-import { usePunchAttendance } from '../../hooks/usePunchAttendance.tsx';
+import { useUserProfile } from '../../hooks/useUserProfile.ts';
+import { useLastPunchAttendance } from '../../hooks/useLastPunchAttendance.ts';
+import { usePunchAttendance } from '../../hooks/usePunchAttendance.ts';
 import { getInitials } from '../../helpers/getInitials.ts';
 import { getGreeting } from '../../helpers/getGreetings.ts';
 import type { FirestoreTimestamp } from '../../types/types.ts';
 export const Home = () => {
   const { userProfile, isUserLoading, userError } = useUserProfile();
-  const { lastAttendance, isAttendanceLoading } = useLastAttendance();
+  const { lastAttendance, isAttendanceLoading } = useLastPunchAttendance();
   const { punchAttendance, isPunchLoading } = usePunchAttendance();
   const [date, setDate] = useState(new Date());
   const today = date.toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });

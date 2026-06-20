@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { TodayDailySummary } from '../../components/home/dashboard/TodayDailySummary.tsx';
 import { DailySummaryList } from '../../components/home/dashboard/DailySummaryList.tsx';
 import { PunchClockPanel } from '../../components/home/dashboard/PunchClockPanel.tsx';
-import { useUserProfile } from '../../hooks/useUserProfile.tsx';
+import { useUserProfile } from '../../hooks/useUserProfile.ts';
 
 export const Dashboard = () => {
   const [now, setNow] = useState(new Date());

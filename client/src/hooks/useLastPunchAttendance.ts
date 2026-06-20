@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { auth } from '../configs/firebase.ts';
 import { getIdToken } from 'firebase/auth';
-import { useAuthStore } from '../store/useAuthStore.tsx';
+import { useAuthStore } from '../store/useAuthStore.ts';
 import type { Attendance } from '../types/types.ts';
 
-const getLastAttendance = async (): Promise<Attendance> => {
+const getLastPunchAttendance = async (): Promise<Attendance> => {
   const api = import.meta.env.VITE_BACKEND_API;
   const user = auth.currentUser;
   if (!user) throw new Error('Not authenticated');
@@ -24,12 +24,12 @@ const getLastAttendance = async (): Promise<Attendance> => {
   return data.data;
 };
 
-export const useLastAttendance = () => {
+export const useLastPunchAttendance = () => {
   const user = useAuthStore((state) => state.user);
   const isAuthLoading = useAuthStore((state) => state.isAuthLoading);
   const { data, isLoading, error } = useQuery({
     queryKey: ['lastAttendance', user?.uid],
-    queryFn: getLastAttendance,
+    queryFn: getLastPunchAttendance,
     enabled: !!user && !isAuthLoading,
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { useAuthStore } from '../store/useAuthStore.tsx';
+import { useAuthStore } from '../store/useAuthStore.ts';
 import { signOut } from 'firebase/auth';
 import { auth } from '../configs/firebase.ts';
 import {

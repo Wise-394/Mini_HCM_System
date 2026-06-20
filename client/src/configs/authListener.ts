@@ -1,7 +1,7 @@
 import { onAuthStateChanged } from 'firebase/auth';
 import { getIdToken } from 'firebase/auth';
 import { auth } from './firebase.ts';
-import { useAuthStore } from '../store/useAuthStore.tsx';
+import { useAuthStore } from '../store/useAuthStore.ts';
 
 export const initAuthListener = () => {
   const { login, logout, setAuthLoading } = useAuthStore.getState();

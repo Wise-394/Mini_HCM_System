@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getIdToken } from 'firebase/auth';
 import { auth } from '../configs/firebase.ts';
 import type { UserProfileType } from '../types/types.ts';
-import { useAuthStore } from '../store/useAuthStore.tsx';
+import { useAuthStore } from '../store/useAuthStore.ts';
 
 const getUserProfile = async (
   uid: string | undefined
@@ -11,7 +11,6 @@ const getUserProfile = async (
   if (!currentUser || currentUser.uid !== uid) {
     throw new Error('Not authenticated');
   }
-
   const token = await getIdToken(currentUser);
   const api = import.meta.env.VITE_BACKEND_API;
 
@@ -40,13 +39,13 @@ export const useUserProfile = () => {
     queryFn: () => getUserProfile(user?.uid),
     enabled: !!user?.uid && !isAuthLoading,
     staleTime: 1000 * 60 * 10,
-    retry: 1,
+    retry: 0,
     refetchOnWindowFocus: false,
   });
 
   return {
     userProfile: data || null,
-    isUserLoading: isLoading || isAuthLoading,
+    isUserLoading: isAuthLoading || (!!user?.uid && isLoading),
     userError: error?.message || null,
   };
 };

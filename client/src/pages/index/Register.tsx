@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { useRegister } from '../../hooks/useRegister.tsx';
+import { useRegister } from '../../hooks/useRegister.ts';
 
 export const Register = () => {
   const { registerUser, isLoading, error: apiError } = useRegister();

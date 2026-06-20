@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { auth } from '../configs/firebase.ts';
 import { getIdToken } from 'firebase/auth';
-import { useAuthStore } from '../store/useAuthStore.tsx';
+import { useAuthStore } from '../store/useAuthStore.ts';
 import type { DailyAttendance } from '../types/types.ts';
 
 const getAttendanceByDate = async (
