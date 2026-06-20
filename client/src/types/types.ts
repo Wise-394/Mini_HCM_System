@@ -28,3 +28,12 @@ export interface Attendance {
   timestamp: string | FirestoreTimestamp;
   date: string;
 }
+
+export interface DailySummary {
+  date: string; // ISO date
+  regularHrs: number;
+  otHrs: number;
+  ndHrs: number;
+  lateMins: number;
+  undertimeMins: number;
+}
