@@ -1,16 +1,30 @@
-import { formatHrs, formatMins } from '../../../helpers/formats.ts';
+import {
+  formatHrs,
+  formatMins,
+  formatDateLabel,
+} from '../../../helpers/formats.ts';
 import {
   HiOutlineCheckCircle,
   HiOutlineArrowTrendingUp,
   HiOutlineArrowTrendingDown,
   HiOutlineMoon,
   HiOutlineExclamationTriangle,
+  HiOutlineArrowUturnLeft,
 } from 'react-icons/hi2';
 import { useDailySummary } from '../../../hooks/useDailySummary.ts';
+import { useSelectedDateStore } from '../../../store/useSelectedStore.ts';
+
+const getTodayDate = () => new Date().toISOString().split('T')[0];
 
 export const DailySummaryByDate = () => {
-  const today = new Date().toISOString().split('T')[0];
-  const { dailySummary, isDailySummaryLoading } = useDailySummary(today);
+  const today = getTodayDate();
+  const selectedDate = useSelectedDateStore((state) => state.selectedDate);
+  const resetToToday = useSelectedDateStore((state) => state.resetToToday);
+
+  const activeDate = selectedDate ?? today;
+  const isToday = activeDate === today;
+
+  const { dailySummary, isDailySummaryLoading } = useDailySummary(activeDate);
 
   const kpis = [
     {
@@ -47,7 +61,23 @@ export const DailySummaryByDate = () => {
 
   return (
     <section>
-      <h2 className="text-sm font-bold text-slate-900 mb-3">Today's Summary</h2>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-sm font-bold text-slate-900">
+          {isToday
+            ? "Today's Summary"
+            : `Summary for ${formatDateLabel(activeDate)}`}
+        </h2>
+        {!isToday && (
+          <button
+            onClick={resetToToday}
+            className="flex items-center gap-1 text-xs font-semibold
+              text-blue-600 hover:text-blue-700 hover:cursor-pointer"
+          >
+            <HiOutlineArrowUturnLeft className="w-3.5 h-3.5" />
+            Back to Today
+          </button>
+        )}
+      </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         {kpis.map(({ label, value, icon: Icon, accent }) => (
           <div
