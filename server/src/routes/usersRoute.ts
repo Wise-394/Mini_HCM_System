@@ -5,6 +5,8 @@ import { validateUserProfile } from '../middleware/validation.js';
 import { handleValidationErrors } from '../middleware/handleValidationErrors.js';
 export const usersRoute = Router();
 
+// POST   /api/users                  → register a new user profile
+// GET    /api/users/:userId          → get user profile by their user ID
 usersRoute.post(
   '/',
   verifyToken,

@@ -3,7 +3,7 @@ import {
   readDailySummaryHistory,
   readDailySummary,
 } from '../services/dailySummaryService.js';
-import { toStringParam } from '../services/utils/toStringParam.js';
+import { toStringParam } from '../services/utils/helpers.js';
 
 export const getUserDailySummaryHistory = async (
   req: Request,
