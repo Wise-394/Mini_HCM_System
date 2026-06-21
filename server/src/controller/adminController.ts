@@ -1,8 +1,8 @@
 //some controllers are reused from employees and arent in admin controller
 //check adminRoute.ts to view all controllers used by admin
 import type { Request, Response, NextFunction } from 'express';
-import { computeAdminDailyKpis } from '../services/dailySummaryService.js';
-import { readAllUserAttendanceByDate } from '../services/attendanceService.js';
+import { computeAdminDailyKpis } from '../services/adminService.js';
+import { readAllUserAttendanceByDate } from '../services/adminService.js';
 export const getKPIOfAllEmployees = async (
   req: Request,
   res: Response,

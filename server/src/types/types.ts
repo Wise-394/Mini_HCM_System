@@ -55,3 +55,11 @@ export type AdminDailyKpis = {
   lateCount: number;
   undertimeCount: number;
 };
+
+export interface DailyAttendanceWithSummary {
+  name?: string;
+  schedule?: WorkSchedule | null;
+  in: AttendanceDoc | null;
+  out: AttendanceDoc | null;
+  summary?: DailySummary | null;
+}

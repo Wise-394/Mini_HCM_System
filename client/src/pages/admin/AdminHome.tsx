@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuthStore } from '../../store/useAuthStore.ts';
 import { EmployeesKPI } from '../../components/admin/EmpployeesKPI.tsx';
 import { HiOutlineClock } from 'react-icons/hi2';
-import { EmployeesAttendanceList } from '../../components/admin/EmplyeesAttendanceList.tsx';
+import { EmployeesAttendanceList } from '../../components/admin/EmployeesAttendanceList.tsx';
 
 const getGreeting = () => {
   const hour = new Date().getHours();

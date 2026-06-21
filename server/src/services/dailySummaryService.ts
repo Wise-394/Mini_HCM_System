@@ -1,7 +1,6 @@
 import { getFirestore } from 'firebase-admin/firestore';
 import type { DailySummary, AdminDailyKpis } from '../types/types.js';
 import { roundHours } from './utils/helpers.js';
-import { readAllEmployees } from './userService.js';
 
 export const saveDailySummary = async (summary: DailySummary) => {
   const db = getFirestore();
@@ -41,64 +40,4 @@ export const readDailySummaryHistory = async (
   if (result.empty) return [];
 
   return result.docs.map((doc) => doc.data() as DailySummary);
-};
-
-//-----------admin---------------------------
-//functions needed by admin
-
-export const readDailySummaryOfEmployeesByDate = async (
-  date: string
-): Promise<DailySummary[]> => {
-  const db = getFirestore();
-
-  const [snapshot, employees] = await Promise.all([
-    db.collection('dailySummary').where('date', '==', date).get(),
-    readAllEmployees(),
-  ]);
-
-  const nameByUserId = new Map(
-    employees.map((employee) => [employee.uid, employee.name])
-  );
-
-  return snapshot.docs.map((doc) => {
-    const data = doc.data() as DailySummary;
-    return {
-      ...data,
-      name: nameByUserId.get(data.userId) ?? 'Unknown',
-    };
-  });
-};
-
-export const computeAdminDailyKpis = async (
-  date: string
-): Promise<AdminDailyKpis> => {
-  const [employees, summaries] = await Promise.all([
-    readAllEmployees(),
-    readDailySummaryOfEmployeesByDate(date),
-  ]);
-
-  const kpis: AdminDailyKpis = {
-    totalEmployees: employees.length,
-    presentCount: 0,
-    regularHours: 0,
-    overtimeHours: 0,
-    nightDifferentialHours: 0,
-    lateCount: 0,
-    undertimeCount: 0,
-  };
-
-  for (const summary of summaries) {
-    if (summary.status === 'present') kpis.presentCount++;
-    kpis.regularHours += summary.regularHours ?? 0;
-    kpis.overtimeHours += summary.overtimeHours ?? 0;
-    kpis.nightDifferentialHours += summary.nightDifferentialHours ?? 0;
-    if ((summary.lateMinutes ?? 0) > 0) kpis.lateCount++;
-    if ((summary.undertimeMinutes ?? 0) > 0) kpis.undertimeCount++;
-  }
-
-  kpis.regularHours = roundHours(kpis.regularHours);
-  kpis.overtimeHours = roundHours(kpis.overtimeHours);
-  kpis.nightDifferentialHours = roundHours(kpis.nightDifferentialHours);
-
-  return kpis;
 };

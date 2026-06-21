@@ -17,18 +17,3 @@ export const readUser = async (
 
   return doc.data() as UserProfileType;
 };
-
-//-----------admin---------------------------
-//functions needed by admin
-
-export const readAllEmployees = async (): Promise<UserProfileType[]> => {
-  const db = getFirestore();
-  const snapshot = await db
-    .collection('users')
-    .where('role', '==', 'employee')
-    .get();
-
-  return snapshot.docs.map(
-    (doc) => ({ ...doc.data(), uid: doc.id }) as UserProfileType
-  );
-};
