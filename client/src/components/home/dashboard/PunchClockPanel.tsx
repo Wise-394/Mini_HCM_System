@@ -4,7 +4,7 @@ import type { WorkSchedule, UserRole } from '../../../types/types.ts';
 import { useAttendance } from '../../../hooks/get/useAttendance.ts';
 import { useUserProfile } from '../../../hooks/get/useUserProfile.ts';
 import { formatClock, formatTimestamp } from '../../../helpers/formats.ts';
-
+import { useSelectedDateStore } from '../../../store/useSelectedStore.ts';
 interface PunchClockCardProps {
   now: Date;
   statusLabel: string;
@@ -20,8 +20,10 @@ export const PunchClockPanel = () => {
     return () => clearInterval(id);
   }, []);
 
-  const today = useMemo(() => new Date().toISOString().split('T')[0], []); //prevent tanstack to refetch for each useEffectUpdate
-  const { attendance } = useAttendance(today);
+  const today = useMemo(() => new Date().toISOString().split('T')[0], []);
+  const selectedDate = useSelectedDateStore((state) => state.selectedDate);
+  const date = selectedDate ?? today;
+  const { attendance } = useAttendance(date);
   const { userProfile } = useUserProfile();
 
   const clockIn = formatTimestamp(attendance?.in?.timestamp as string);

@@ -9,6 +9,7 @@ import {
 } from '../../helpers/formats.ts';
 import { useAllEmployeesAttendanceByDate } from '../../hooks/get/useAllEmployeesAttendanceByDate.ts';
 import { useSelectedDateStore } from '../../store/useSelectedStore.ts';
+import type { DailyAttendanceWithSummary } from '../../types/types.ts';
 
 const GRID =
   'grid grid-cols-3 sm:grid-cols-7 gap-x-3 gap-y-1 sm:gap-x-4 sm:gap-y-0 sm:items-center';
@@ -22,6 +23,65 @@ const Stat = ({ label, value }: { label: string; value: string }) => (
   </div>
 );
 
+const AttendanceRow = ({
+  userId,
+  record,
+}: {
+  userId: string;
+  record: DailyAttendanceWithSummary;
+}) => {
+  const isAbsent = !record.in && !record.out;
+  const summary = record.summary;
+  const shiftLabel = record.schedule
+    ? `${formatShiftTime(record.schedule.start)} – ${formatShiftTime(record.schedule.end)}`
+    : '—';
+
+  return (
+    <div key={userId} className={`px-4 py-2.5 sm:px-6 sm:py-4 ${GRID}`}>
+      {/* Name + shift (mobile subtitle) */}
+      <div className="col-span-3 sm:col-span-1">
+        <p
+          className="font-semibold text-slate-900 text-xs sm:text-sm
+            leading-tight"
+        >
+          {record.name}
+        </p>
+        <p className="text-[11px] text-slate-400 sm:hidden leading-tight">
+          {shiftLabel}
+        </p>
+      </div>
+
+      {/* Shift — desktop only */}
+      <p className="hidden sm:block text-slate-500 text-xs sm:text-sm">
+        {shiftLabel}
+      </p>
+
+      {isAbsent ? (
+        <p
+          className="col-span-3 sm:col-span-5 text-rose-500 text-xs sm:text-sm
+            font-medium"
+        >
+          Absent
+        </p>
+      ) : (
+        <>
+          <Stat
+            label="Time In"
+            value={formatTimestamp(record.in?.timestamp) ?? '—'}
+          />
+          <Stat
+            label="Time Out"
+            value={formatTimestamp(record.out?.timestamp) ?? '—'}
+          />
+          <Stat label="Hours" value={formatHrs(summary?.hoursWorked ?? 0)} />
+          <Stat label="OT" value={formatHrs(summary?.overtimeHours ?? 0)} />
+          <Stat label="Late" value={formatMins(summary?.lateMinutes ?? 0)} />
+        </>
+      )}
+    </div>
+  );
+};
+
 export const EmployeesAttendanceList = () => {
   const today = getTodayDate();
   const selectedDate = useSelectedDateStore((state) => state.selectedDate);
@@ -29,7 +89,6 @@ export const EmployeesAttendanceList = () => {
 
   const { attendance, isAttendanceLoading } =
     useAllEmployeesAttendanceByDate(date);
-
   const rows = attendance ? Object.entries(attendance) : [];
 
   return (
@@ -64,13 +123,17 @@ export const EmployeesAttendanceList = () => {
           font-semibold text-gray-400 uppercase tracking-wide border-b
           border-gray-100"
       >
-        <div>Employee</div>
-        <div>Shift</div>
-        <div>Time In</div>
-        <div>Time Out</div>
-        <div>Hours</div>
-        <div>OT</div>
-        <div>Late</div>
+        {[
+          'Employee',
+          'Shift',
+          'Time In',
+          'Time Out',
+          'Hours',
+          'OT',
+          'Late',
+        ].map((col) => (
+          <div key={col}>{col}</div>
+        ))}
       </div>
 
       {/* Rows */}
@@ -90,73 +153,9 @@ export const EmployeesAttendanceList = () => {
             No employees found.
           </p>
         ) : (
-          rows.map(([userId, record]) => {
-            const isAbsent = !record.in && !record.out;
-            const summary = record.summary;
-
-            return (
-              <div
-                key={userId}
-                className={`px-4 py-2.5 sm:px-6 sm:py-4 ${GRID}`}
-              >
-                <div className="col-span-3 sm:col-span-1">
-                  <p
-                    className="font-semibold text-slate-900 text-xs sm:text-sm
-                      leading-tight"
-                  >
-                    {record.name}
-                  </p>
-                  <p
-                    className="text-[11px] text-slate-400 sm:hidden
-                      leading-tight"
-                  >
-                    {record.schedule
-                      ? `${formatShiftTime(record.schedule.start)} – ${formatShiftTime(record.schedule.end)}`
-                      : '—'}
-                  </p>
-                </div>
-
-                {/* Shift — desktop only */}
-                <p className="hidden sm:block text-slate-500 text-xs sm:text-sm">
-                  {record.schedule
-                    ? `${formatShiftTime(record.schedule.start)} – ${formatShiftTime(record.schedule.end)}`
-                    : '—'}
-                </p>
-
-                {isAbsent ? (
-                  <p
-                    className="col-span-3 sm:col-span-5 text-rose-500 text-xs
-                      sm:text-sm font-medium"
-                  >
-                    Absent
-                  </p>
-                ) : (
-                  <>
-                    <Stat
-                      label="Time In"
-                      value={formatTimestamp(record.in?.timestamp) ?? '—'}
-                    />
-                    <Stat
-                      label="Time Out"
-                      value={formatTimestamp(record.out?.timestamp) ?? '—'}
-                    />
-                    <Stat
-                      label="Hours"
-                      value={formatHrs(summary?.hoursWorked ?? 0)}
-                    />
-                    <Stat
-                      label="OT"
-                      value={formatHrs(summary?.overtimeHours ?? 0)}
-                    />
-                    <Stat
-                      label="Late"
-                      value={formatMins(summary?.lateMinutes ?? 0)}
-                    />
-                  </>
-                )}
-              </div>
-            );
-          })
+          rows.map(([userId, record]) => (
+            <AttendanceRow key={userId} userId={userId} record={record} />
+          ))
         )}
       </div>
     </section>

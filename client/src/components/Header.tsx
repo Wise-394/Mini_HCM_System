@@ -12,6 +12,7 @@ import {
   HiOutlineClock,
   HiBars3,
   HiXMark,
+  HiOutlineUser,
 } from 'react-icons/hi2';
 
 type UserRole = 'admin' | 'employee';
@@ -73,7 +74,7 @@ const DesktopNav = ({ user, handleLogout }: DesktopNavProps) => {
           to="/admin/employees"
           className="flex items-center space-x-1.5 hover:text-gray-900"
         >
-          <HiOutlineHome className="h-4 w-4" />
+          <HiOutlineUser className="h-4 w-4" />
           <span>Employees</span>
         </Link>
         <button

@@ -25,7 +25,8 @@ export const initAuthListener = () => {
         } else {
           login({ uid: user.uid, email: user.email, role: profile.role });
         }
-      } catch {
+      } catch (err) {
+        if (err instanceof Error) console.error(err.message);
         logout();
       }
     } else {
