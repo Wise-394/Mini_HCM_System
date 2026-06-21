@@ -28,5 +28,7 @@ export const readAllEmployees = async (): Promise<UserProfileType[]> => {
     .where('role', '==', 'employee')
     .get();
 
-  return snapshot.docs.map((doc) => doc.data() as UserProfileType);
+  return snapshot.docs.map(
+    (doc) => ({ ...doc.data(), uid: doc.id }) as UserProfileType
+  );
 };

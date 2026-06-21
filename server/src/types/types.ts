@@ -24,6 +24,8 @@ export interface AttendanceDoc {
 }
 
 export interface DailyAttendance {
+  name?: string;
+  schedule?: WorkSchedule | null;
   in: AttendanceDoc | null;
   out: AttendanceDoc | null;
 }

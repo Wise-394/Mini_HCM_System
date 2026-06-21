@@ -1,7 +1,7 @@
 import type { AttendanceDoc } from '../types/types.js';
 import { getFirestore } from 'firebase-admin/firestore';
 import type { DailyAttendance } from '../types/types.js';
-
+import { readAllEmployees } from './userService.js';
 export const createAttendanceDoc = async (attendanceDoc: AttendanceDoc) => {
   const db = getFirestore();
   await db.collection('attendance').add(attendanceDoc);
@@ -98,22 +98,38 @@ export const readAllUserAttendanceByDate = async (
   const db = getFirestore();
   const baseQuery = db.collection('attendance').where('date', '==', date);
 
-  const [inResult, outResult] = await Promise.all([
+  const [inResult, outResult, employees] = await Promise.all([
     baseQuery.where('type', '==', 'in').orderBy('timestamp', 'asc').get(),
     baseQuery.where('type', '==', 'out').orderBy('timestamp', 'asc').get(),
+    readAllEmployees(),
   ]);
 
   const result: Record<string, DailyAttendance> = {};
 
+  for (const employee of employees) {
+    result[employee.uid] = {
+      name: employee.name,
+      schedule: employee.schedule,
+      in: null,
+      out: null,
+    };
+  }
+
+  const ensureEntry = (userId: string) => {
+    if (!result[userId]) {
+      result[userId] = { name: 'Unknown', schedule: null, in: null, out: null };
+    }
+  };
+
   for (const doc of inResult.docs) {
     const data = { id: doc.id, ...doc.data() } as AttendanceDoc;
-    if (!result[data.userId]) result[data.userId] = { in: null, out: null };
+    ensureEntry(data.userId);
     if (!result[data.userId].in) result[data.userId].in = data;
   }
 
   for (const doc of outResult.docs) {
     const data = { id: doc.id, ...doc.data() } as AttendanceDoc;
-    if (!result[data.userId]) result[data.userId] = { in: null, out: null };
+    ensureEntry(data.userId);
     if (!result[data.userId].out) result[data.userId].out = data;
   }
 

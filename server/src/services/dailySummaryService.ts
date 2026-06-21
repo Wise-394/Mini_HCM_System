@@ -50,12 +50,23 @@ export const readDailySummaryOfEmployeesByDate = async (
   date: string
 ): Promise<DailySummary[]> => {
   const db = getFirestore();
-  const snapshot = await db
-    .collection('dailySummary')
-    .where('date', '==', date)
-    .get();
 
-  return snapshot.docs.map((doc) => doc.data() as DailySummary);
+  const [snapshot, employees] = await Promise.all([
+    db.collection('dailySummary').where('date', '==', date).get(),
+    readAllEmployees(),
+  ]);
+
+  const nameByUserId = new Map(
+    employees.map((employee) => [employee.uid, employee.name])
+  );
+
+  return snapshot.docs.map((doc) => {
+    const data = doc.data() as DailySummary;
+    return {
+      ...data,
+      name: nameByUserId.get(data.userId) ?? 'Unknown',
+    };
+  });
 };
 
 export const computeAdminDailyKpis = async (

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import {
   HiOutlineUserGroup,
   HiOutlineCheckCircle,
@@ -8,10 +8,13 @@ import {
   HiOutlineExclamationTriangle,
   HiOutlineCalendarDays,
 } from 'react-icons/hi2';
-import { formatHrs, formatDateLabel } from '../../helpers/formats.ts';
+import {
+  formatHrs,
+  formatDateLabel,
+  getTodayDate,
+} from '../../helpers/formats.ts';
 import { useKPIOfAllEmployees } from '../../hooks/get/useKPIOfAllEmployeess.ts';
-
-const getTodayDate = () => new Date().toISOString().split('T')[0];
+import { useSelectedDateStore } from '../../store/useSelectedStore.ts';
 
 type KpiDatePickerProps = {
   value: string;
@@ -39,10 +42,17 @@ const KpiDatePicker = ({ value, onChange }: KpiDatePickerProps) => {
 
 export const EmployeesKPI = () => {
   const today = getTodayDate();
-  const [selectedDate, setSelectedDate] = useState(today);
-  const isToday = selectedDate === today;
+  const selectedDate = useSelectedDateStore((s) => s.selectedDate);
+  const setSelectedDate = useSelectedDateStore((s) => s.setSelectedDate);
+  const resetToToday = useSelectedDateStore((s) => s.resetToToday);
+  const date = selectedDate ?? today;
+  const isToday = date === today;
 
-  const { kpis, isKPIsLoading, kpisError } = useKPIOfAllEmployees(selectedDate);
+  useEffect(() => {
+    resetToToday();
+  }, [resetToToday]);
+
+  const { kpis, isKPIsLoading, kpisError } = useKPIOfAllEmployees(date);
 
   const cards = [
     {
@@ -89,19 +99,19 @@ export const EmployeesKPI = () => {
         <h2 className="text-sm font-bold text-slate-900">
           {isToday
             ? "Today's Company Summary"
-            : `Company Summary for ${formatDateLabel(selectedDate)}`}
+            : `Company Summary for ${formatDateLabel(date)}`}
         </h2>
         <div className="flex items-center gap-2">
           {!isToday && (
             <button
-              onClick={() => setSelectedDate(today)}
+              onClick={resetToToday}
               className="text-xs font-semibold text-blue-600 hover:text-blue-700
                 hover:cursor-pointer"
             >
               Back to Today
             </button>
           )}
-          <KpiDatePicker value={selectedDate} onChange={setSelectedDate} />
+          <KpiDatePicker value={date} onChange={setSelectedDate} />
         </div>
       </div>
 

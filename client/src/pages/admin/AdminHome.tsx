@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuthStore } from '../../store/useAuthStore.ts';
 import { EmployeesKPI } from '../../components/admin/EmpployeesKPI.tsx';
 import { HiOutlineClock } from 'react-icons/hi2';
+import { EmployeesAttendanceList } from '../../components/admin/EmplyeesAttendanceList.tsx';
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -82,8 +83,8 @@ export const AdminHome = () => {
           </div>
         </div>
 
-        {/* KPI overview */}
         <EmployeesKPI />
+        <EmployeesAttendanceList />
       </div>
     </main>
   );

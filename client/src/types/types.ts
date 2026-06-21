@@ -29,6 +29,8 @@ export interface Attendance {
 }
 
 export interface DailyAttendance {
+  name?: string;
+  schedule?: WorkSchedule | null;
   in: Attendance | null;
   out: Attendance | null;
 }
@@ -57,6 +59,7 @@ export interface DailySummaryHistoryResponse {
 }
 
 export type AdminDailyKpis = {
+  name: string;
   totalEmployees: number;
   presentCount: number;
   regularHours: number;
