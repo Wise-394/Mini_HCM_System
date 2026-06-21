@@ -1,29 +1,7 @@
 import type { AttendanceDoc, WorkSchedule } from '../../types/types.js';
 import { DateTime } from 'luxon';
-
+import { roundHours, getShiftLengthHours } from './helpers.js';
 const MANILA_TZ = 'Asia/Manila';
-
-// ── Helpers ──────────────────────────────────────────
-
-const roundHours = (hours: number): number => Math.round(hours * 100) / 100;
-
-const parseTimeToMinutes = (time: string): number => {
-  const [hours, minutes] = time.split(':').map(Number);
-  return hours * 60 + minutes;
-};
-
-const getShiftLengthHours = (schedule: WorkSchedule): number => {
-  const startMinutes = parseTimeToMinutes(schedule.start);
-  let endMinutes = parseTimeToMinutes(schedule.end);
-
-  if (endMinutes <= startMinutes) {
-    endMinutes += 24 * 60;
-  }
-
-  return (endMinutes - startMinutes) / 60;
-};
-
-// ── Computation functions ───────────────────────────
 
 export const calculateHoursWorked = (
   punchIn: AttendanceDoc,

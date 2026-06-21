@@ -10,7 +10,14 @@ export const HomeLayout = () => {
 
   useEffect(() => {
     if (isAuthLoading) return;
-    if (!user) navigate('/');
+    if (!user) {
+      navigate('/');
+      return;
+    }
+
+    if (user.role !== 'employee') {
+      navigate('/admin');
+    }
   }, [user, isAuthLoading, navigate]);
 
   if (isAuthLoading)
@@ -22,6 +29,8 @@ export const HomeLayout = () => {
         />
       </div>
     );
+
+  if (!user || user.role !== 'employee') return null;
 
   return (
     <>

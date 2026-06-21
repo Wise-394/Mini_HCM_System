@@ -43,3 +43,13 @@ export interface DailySummary {
 export type AttendanceValidationResult =
   | { allowed: true }
   | { allowed: false; reason: string };
+
+export type AdminDailyKpis = {
+  totalEmployees: number;
+  presentCount: number;
+  regularHours: number;
+  overtimeHours: number;
+  nightDifferentialHours: number;
+  lateCount: number;
+  undertimeCount: number;
+};

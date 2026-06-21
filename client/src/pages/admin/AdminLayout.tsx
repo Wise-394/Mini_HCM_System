@@ -1,16 +1,21 @@
 import { useNavigate, Outlet } from 'react-router';
 import { useEffect } from 'react';
-import { Header } from '../../components/Header.tsx';
 import { useAuthStore } from '../../store/useAuthStore.ts';
 
-export const IndexLayout = () => {
+export const AdminLayout = () => {
   const user = useAuthStore((state) => state.user);
   const isAuthLoading = useAuthStore((state) => state.isAuthLoading);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (isAuthLoading) return;
-    if (user) navigate(user.role === 'admin' ? '/admin' : '/home');
+    if (!user) {
+      navigate('/');
+      return;
+    }
+    if (user.role !== 'admin') {
+      navigate('/home');
+    }
   }, [user, isAuthLoading, navigate]);
 
   if (isAuthLoading)
@@ -23,10 +28,7 @@ export const IndexLayout = () => {
       </div>
     );
 
-  return (
-    <>
-      <Header />
-      <Outlet />
-    </>
-  );
+  if (!user || user.role !== 'admin') return null;
+
+  return <Outlet />;
 };

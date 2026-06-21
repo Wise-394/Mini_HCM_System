@@ -1,9 +1,15 @@
 import { create } from 'zustand';
 
+interface AuthUser {
+  uid: string;
+  email: string;
+  role: 'admin' | 'employee';
+}
+
 interface AuthState {
-  user: { uid: string; email: string } | null;
+  user: AuthUser | null;
   isAuthLoading: boolean;
-  login: (user: { uid: string; email: string }) => void;
+  login: (user: AuthUser) => void;
   logout: () => void;
   setAuthLoading: (value: boolean) => void;
 }

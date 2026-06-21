@@ -7,6 +7,8 @@ import type { RouteObject } from 'react-router';
 import { HomeLayout } from '../pages/home/HomeLayout.tsx';
 import { Home } from '../pages/home/Home.tsx';
 import { Dashboard } from '../pages/home/Dashboard.tsx';
+import { AdminLayout } from '../pages/admin/AdminLayout.tsx';
+import { AdminHome } from '../pages/admin/AdminHome.tsx';
 
 export const routes: RouteObject[] = [
   {
@@ -44,6 +46,17 @@ export const routes: RouteObject[] = [
       {
         path: '/home/dashboard',
         element: <Dashboard />,
+      },
+    ],
+  },
+  {
+    path: '/admin',
+    element: <AdminLayout />,
+    errorElement: <ErrorRoute />,
+    children: [
+      {
+        index: true,
+        element: <AdminHome />,
       },
     ],
   },
