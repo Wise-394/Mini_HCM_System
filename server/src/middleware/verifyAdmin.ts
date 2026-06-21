@@ -10,7 +10,7 @@ export const verifyAdmin = async (
     const userId = req.user!.uid;
     const user = await readUser(userId);
 
-    if (!user || user.role !== 'employee') {
+    if (!user || user.role !== 'admin') {
       return res
         .status(403)
         .json({ message: 'Operation requires admin privileges.' });

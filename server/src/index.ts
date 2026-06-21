@@ -6,6 +6,7 @@ import { errorRouter } from './routes/errorRoute.js';
 import { attendanceRouter } from './routes/attendanceRoute.js';
 import { dailySummaryRouter } from './routes/dailySummaryRoute.js';
 import { seedDatabaseIfEmpty } from './services/seedDatabaseService.js';
+import { adminRouter } from './routes/adminRoute.js';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -18,6 +19,7 @@ await seedDatabaseIfEmpty();
 app.use('/users', usersRouter);
 app.use('/attendance', attendanceRouter);
 app.use('/daily-summaries', dailySummaryRouter);
+app.use('/admin', adminRouter);
 app.use(errorRouter);
 
 app.listen(PORT, () => {

@@ -10,7 +10,7 @@ const getKPIOfAllEmployees = async (date: string): Promise<AdminDailyKpis> => {
   if (!user) throw new Error('Not authenticated');
 
   const token = await getIdToken(user);
-  const res = await fetch(`${api}/admin/daily-summaries/kpi/${date}`, {
+  const res = await fetch(`${api}/admin/kpi/${date}`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,

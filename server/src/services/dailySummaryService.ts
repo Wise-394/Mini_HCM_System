@@ -1,6 +1,7 @@
 import { getFirestore } from 'firebase-admin/firestore';
 import type { DailySummary, AdminDailyKpis } from '../types/types.js';
 import { roundHours } from './utils/helpers.js';
+import { readAllEmployees } from './userService.js';
 
 export const saveDailySummary = async (summary: DailySummary) => {
   const db = getFirestore();
@@ -60,10 +61,13 @@ export const readDailySummaryOfEmployeesByDate = async (
 export const computeAdminDailyKpis = async (
   date: string
 ): Promise<AdminDailyKpis> => {
-  const summaries = await readDailySummaryOfEmployeesByDate(date);
+  const [employees, summaries] = await Promise.all([
+    readAllEmployees(),
+    readDailySummaryOfEmployeesByDate(date),
+  ]);
 
   const kpis: AdminDailyKpis = {
-    totalEmployees: summaries.length,
+    totalEmployees: employees.length,
     presentCount: 0,
     regularHours: 0,
     overtimeHours: 0,

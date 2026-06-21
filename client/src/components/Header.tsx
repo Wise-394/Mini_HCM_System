@@ -14,8 +14,16 @@ import {
   HiXMark,
 } from 'react-icons/hi2';
 
+type UserRole = 'admin' | 'employee';
+
+interface AuthUser {
+  uid: string;
+  email: string;
+  role: UserRole;
+}
+
 interface DesktopNavProps {
-  user: { uid: string; email: string } | null;
+  user: AuthUser | null;
   handleLogout: () => Promise<void>;
 }
 
@@ -24,7 +32,56 @@ interface MobileNavProps extends DesktopNavProps {
 }
 
 const DesktopNav = ({ user, handleLogout }: DesktopNavProps) => {
-  return user ? (
+  if (!user) {
+    return (
+      <nav
+        className="hidden md:flex items-center space-x-6 text-sm font-medium
+          text-gray-600"
+      >
+        <Link
+          to="/register"
+          className="flex items-center space-x-1.5 hover:text-gray-900"
+        >
+          <HiOutlineUserPlus className="h-4 w-4" />
+          <span>Register</span>
+        </Link>
+        <Link
+          to="/login"
+          className="flex items-center space-x-1.5 hover:text-gray-900"
+        >
+          <HiOutlineArrowRightOnRectangle className="h-4 w-4" />
+          <span>Login</span>
+        </Link>
+      </nav>
+    );
+  }
+
+  if (user.role === 'admin') {
+    return (
+      <nav
+        className="hidden md:flex items-center space-x-6 text-sm font-medium
+          text-gray-600"
+      >
+        <Link
+          to="/admin"
+          className="flex items-center space-x-1.5 hover:text-gray-900"
+        >
+          <HiOutlineHome className="h-4 w-4" />
+          <span>Home</span>
+        </Link>
+        <button
+          onClick={handleLogout}
+          className="flex items-center space-x-1.5 hover:text-gray-900
+            hover:cursor-pointer"
+        >
+          <HiOutlineArrowLeftOnRectangle className="h-4 w-4" />
+          <span>Logout</span>
+        </button>
+      </nav>
+    );
+  }
+
+  return (
     <nav
       className="hidden md:flex items-center space-x-6 text-sm font-medium
         text-gray-600"
@@ -52,65 +109,16 @@ const DesktopNav = ({ user, handleLogout }: DesktopNavProps) => {
         <span>Logout</span>
       </button>
     </nav>
-  ) : (
-    <nav
-      className="hidden md:flex items-center space-x-6 text-sm font-medium
-        text-gray-600"
-    >
-      <Link
-        to="/register"
-        className="flex items-center space-x-1.5 hover:text-gray-900"
-      >
-        <HiOutlineUserPlus className="h-4 w-4" />
-        <span>Register</span>
-      </Link>
-      <Link
-        to="/login"
-        className="flex items-center space-x-1.5 hover:text-gray-900"
-      >
-        <HiOutlineArrowRightOnRectangle className="h-4 w-4" />
-        <span>Login</span>
-      </Link>
-    </nav>
   );
 };
 
 const MobileNav = ({ user, handleLogout, setIsOpen }: MobileNavProps) => {
-  return (
-    <div
-      className="absolute top-16 left-0 right-0 md:hidden border-b
-        border-gray-200 bg-white px-6 py-4 space-y-4 shadow-lg z-50"
-    >
-      {user ? (
-        <nav
-          className="flex flex-col space-y-4 text-sm font-medium text-gray-600"
-        >
-          <Link
-            to="/home"
-            className="flex items-center space-x-2 hover:text-gray-900 py-1"
-            onClick={() => setIsOpen(false)}
-          >
-            <HiOutlineHome className="h-5 w-5" />
-            <span>Home</span>
-          </Link>
-          <Link
-            to="/home/dashboard"
-            className="flex items-center space-x-2 hover:text-gray-900 py-1"
-            onClick={() => setIsOpen(false)}
-          >
-            <HiOutlineSquares2X2 className="h-5 w-5" />
-            <span>Dashboard</span>
-          </Link>
-          <button
-            onClick={handleLogout}
-            className="flex items-center space-x-2 hover:text-gray-900 py-1
-              text-left w-full"
-          >
-            <HiOutlineArrowLeftOnRectangle className="h-5 w-5" />
-            <span>Logout</span>
-          </button>
-        </nav>
-      ) : (
+  if (!user) {
+    return (
+      <div
+        className="absolute top-16 left-0 right-0 md:hidden border-b
+          border-gray-200 bg-white px-6 py-4 space-y-4 shadow-lg z-50"
+      >
         <nav
           className="flex flex-col space-y-4 text-sm font-medium text-gray-600"
         >
@@ -131,7 +139,71 @@ const MobileNav = ({ user, handleLogout, setIsOpen }: MobileNavProps) => {
             <span>Login</span>
           </Link>
         </nav>
-      )}
+      </div>
+    );
+  }
+
+  if (user.role === 'admin') {
+    return (
+      <div
+        className="absolute top-16 left-0 right-0 md:hidden border-b
+          border-gray-200 bg-white px-6 py-4 space-y-4 shadow-lg z-50"
+      >
+        <nav
+          className="flex flex-col space-y-4 text-sm font-medium text-gray-600"
+        >
+          <Link
+            to="/admin"
+            className="flex items-center space-x-2 hover:text-gray-900 py-1"
+            onClick={() => setIsOpen(false)}
+          >
+            <HiOutlineHome className="h-5 w-5" />
+            <span>Home</span>
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="flex items-center space-x-2 hover:text-gray-900 py-1
+              text-left w-full"
+          >
+            <HiOutlineArrowLeftOnRectangle className="h-5 w-5" />
+            <span>Logout</span>
+          </button>
+        </nav>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="absolute top-16 left-0 right-0 md:hidden border-b
+        border-gray-200 bg-white px-6 py-4 space-y-4 shadow-lg z-50"
+    >
+      <nav className="flex flex-col space-y-4 text-sm font-medium text-gray-600">
+        <Link
+          to="/home"
+          className="flex items-center space-x-2 hover:text-gray-900 py-1"
+          onClick={() => setIsOpen(false)}
+        >
+          <HiOutlineHome className="h-5 w-5" />
+          <span>Home</span>
+        </Link>
+        <Link
+          to="/home/dashboard"
+          className="flex items-center space-x-2 hover:text-gray-900 py-1"
+          onClick={() => setIsOpen(false)}
+        >
+          <HiOutlineSquares2X2 className="h-5 w-5" />
+          <span>Dashboard</span>
+        </Link>
+        <button
+          onClick={handleLogout}
+          className="flex items-center space-x-2 hover:text-gray-900 py-1
+            text-left w-full"
+        >
+          <HiOutlineArrowLeftOnRectangle className="h-5 w-5" />
+          <span>Logout</span>
+        </button>
+      </nav>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import { useNavigate, Outlet } from 'react-router';
 import { useEffect } from 'react';
 import { useAuthStore } from '../../store/useAuthStore.ts';
+import { Header } from '../../components/Header.tsx';
 
 export const AdminLayout = () => {
   const user = useAuthStore((state) => state.user);
@@ -30,5 +31,10 @@ export const AdminLayout = () => {
 
   if (!user || user.role !== 'admin') return null;
 
-  return <Outlet />;
+  return (
+    <>
+      <Header />
+      <Outlet />
+    </>
+  );
 };
