@@ -10,6 +10,7 @@ import { Dashboard } from '../pages/home/Dashboard.tsx';
 import { AdminLayout } from '../pages/admin/AdminLayout.tsx';
 import { AdminHome } from '../pages/admin/AdminHome.tsx';
 import { EmployeesList } from '../pages/admin/EmployeesList.tsx';
+import { EmployeeProfilePage } from '../pages/admin/EmployeeProfile.tsx';
 
 export const routes: RouteObject[] = [
   {
@@ -17,18 +18,9 @@ export const routes: RouteObject[] = [
     element: <IndexLayout />,
     errorElement: <ErrorRoute />,
     children: [
-      {
-        index: true,
-        element: <Index />,
-      },
-      {
-        path: '/register',
-        element: <Register />,
-      },
-      {
-        path: '/login',
-        element: <Login />,
-      },
+      { index: true, element: <Index /> },
+      { path: '/register', element: <Register /> },
+      { path: '/login', element: <Login /> },
     ],
   },
   {
@@ -40,14 +32,8 @@ export const routes: RouteObject[] = [
     element: <HomeLayout />,
     errorElement: <ErrorRoute />,
     children: [
-      {
-        index: true,
-        element: <Home />,
-      },
-      {
-        path: '/home/dashboard',
-        element: <Dashboard />,
-      },
+      { index: true, element: <Home /> },
+      { path: '/home/dashboard', element: <Dashboard /> },
     ],
   },
   {
@@ -55,14 +41,9 @@ export const routes: RouteObject[] = [
     element: <AdminLayout />,
     errorElement: <ErrorRoute />,
     children: [
-      {
-        index: true,
-        element: <AdminHome />,
-      },
-      {
-        path: 'employees',
-        element: <EmployeesList />,
-      },
+      { index: true, element: <AdminHome /> },
+      { path: 'employees', element: <EmployeesList /> },
+      { path: 'employees/:userId', element: <EmployeeProfilePage /> },
     ],
   },
 ];

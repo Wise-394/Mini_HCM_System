@@ -81,7 +81,7 @@ export const computeAdminDailyKpis = async (
 };
 
 //---------ATTENDANCE
-export const readAllUserAttendanceByDate = async (
+export const readAllUsersAttendanceByDate = async (
   date: string
 ): Promise<Record<string, DailyAttendanceWithSummary>> => {
   const db = getFirestore();
@@ -130,6 +130,38 @@ export const readAllUserAttendanceByDate = async (
     const data = { id: doc.id, ...doc.data() } as AttendanceDoc;
     ensureEntry(data.userId);
     if (!result[data.userId].out) result[data.userId].out = data;
+  }
+
+  return result;
+};
+
+export const readAllAttendanceOfUser = async (
+  userId: string
+): Promise<Record<string, DailyAttendance>> => {
+  const db = getFirestore();
+  const baseQuery = db.collection('attendance').where('userId', '==', userId);
+
+  const [inResult, outResult] = await Promise.all([
+    baseQuery.where('type', '==', 'in').orderBy('timestamp', 'asc').get(),
+    baseQuery.where('type', '==', 'out').orderBy('timestamp', 'asc').get(),
+  ]);
+
+  const result: Record<string, DailyAttendance> = {};
+
+  const ensureEntry = (date: string) => {
+    if (!result[date]) result[date] = { in: null, out: null };
+  };
+
+  for (const doc of inResult.docs) {
+    const data = { id: doc.id, ...doc.data() } as AttendanceDoc;
+    ensureEntry(data.date);
+    if (!result[data.date].in) result[data.date].in = data;
+  }
+
+  for (const doc of outResult.docs) {
+    const data = { id: doc.id, ...doc.data() } as AttendanceDoc;
+    ensureEntry(data.date);
+    if (!result[data.date].out) result[data.date].out = data;
   }
 
   return result;
