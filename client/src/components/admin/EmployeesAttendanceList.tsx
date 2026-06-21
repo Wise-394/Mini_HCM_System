@@ -7,7 +7,7 @@ import {
   formatMins,
   getTodayDate,
 } from '../../helpers/formats.ts';
-import { useAllEmployeesAttendanceByDate } from '../../hooks/get/useAllEmployeesAttendanceByDate.tsx';
+import { useAllEmployeesAttendanceByDate } from '../../hooks/get/useAllEmployeesAttendanceByDate.ts';
 import { useSelectedDateStore } from '../../store/useSelectedStore.ts';
 
 const GRID =

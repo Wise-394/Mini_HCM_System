@@ -9,6 +9,7 @@ import { Home } from '../pages/home/Home.tsx';
 import { Dashboard } from '../pages/home/Dashboard.tsx';
 import { AdminLayout } from '../pages/admin/AdminLayout.tsx';
 import { AdminHome } from '../pages/admin/AdminHome.tsx';
+import { EmployeesList } from '../pages/admin/EmployeesList.tsx';
 
 export const routes: RouteObject[] = [
   {
@@ -58,6 +59,11 @@ export const routes: RouteObject[] = [
         index: true,
         element: <AdminHome />,
       },
+      {
+        path: 'employees',
+        element: <EmployeesList />,
+      },
     ],
   },
 ];
+//TODO FIX ABSOLUTE PATH  HOME DASHBOARD

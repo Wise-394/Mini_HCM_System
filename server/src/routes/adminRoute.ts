@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { verifyToken } from '../middleware/verifyToken.js';
 import { verifyAdmin } from '../middleware/verifyAdmin.js';
 import {
+  getAllEmployees,
   getAllUserAttendanceByDate,
   getKPIOfAllEmployees,
 } from '../controller/adminController.js';
@@ -20,6 +21,7 @@ adminRouter.use(verifyToken, verifyAdmin);
 
 adminRouter.get('/kpi/:date', getKPIOfAllEmployees);
 adminRouter.get('/daily-summar/:date', getAllUserAttendanceByDate);
+adminRouter.get('/employees', getAllEmployees);
 
 adminRouter.get('/attendance/:userId', () => {});
 adminRouter.put('/attendance/:attendanceId', () => {});

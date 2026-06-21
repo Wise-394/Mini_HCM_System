@@ -69,6 +69,13 @@ const DesktopNav = ({ user, handleLogout }: DesktopNavProps) => {
           <HiOutlineHome className="h-4 w-4" />
           <span>Home</span>
         </Link>
+        <Link
+          to="/admin/employees"
+          className="flex items-center space-x-1.5 hover:text-gray-900"
+        >
+          <HiOutlineHome className="h-4 w-4" />
+          <span>Employees</span>
+        </Link>
         <button
           onClick={handleLogout}
           className="flex items-center space-x-1.5 hover:text-gray-900
