@@ -7,7 +7,6 @@ import {
 } from '../controller/attendanceController.js';
 import { validateAttendance } from '../middleware/validation.js';
 import { handleValidationErrors } from '../middleware/handleValidationErrors.js';
-import { appendFile } from 'node:fs';
 
 // POST   /api/attendance/punch                 → save a punch in or out
 // GET    /api/attendance/:userId/date        → get today's punches for a user

@@ -55,3 +55,13 @@ export interface DailySummaryHistoryResponse {
   data: DailySummary[];
   pagination: PaginationMeta;
 }
+
+export type AdminDailyKpis = {
+  totalEmployees: number;
+  presentCount: number;
+  regularHours: number;
+  overtimeHours: number;
+  nightDifferentialHours: number;
+  lateCount: number;
+  undertimeCount: number;
+};

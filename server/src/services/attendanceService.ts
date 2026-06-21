@@ -88,3 +88,34 @@ export const readAttendanceOfUserByDate = async (
     out: toDoc(outResult),
   };
 };
+
+//-----------admin---------------------------
+//functions needed by admin
+
+export const readAllUserAttendanceByDate = async (
+  date: string
+): Promise<Record<string, DailyAttendance>> => {
+  const db = getFirestore();
+  const baseQuery = db.collection('attendance').where('date', '==', date);
+
+  const [inResult, outResult] = await Promise.all([
+    baseQuery.where('type', '==', 'in').orderBy('timestamp', 'asc').get(),
+    baseQuery.where('type', '==', 'out').orderBy('timestamp', 'asc').get(),
+  ]);
+
+  const result: Record<string, DailyAttendance> = {};
+
+  for (const doc of inResult.docs) {
+    const data = { id: doc.id, ...doc.data() } as AttendanceDoc;
+    if (!result[data.userId]) result[data.userId] = { in: null, out: null };
+    if (!result[data.userId].in) result[data.userId].in = data;
+  }
+
+  for (const doc of outResult.docs) {
+    const data = { id: doc.id, ...doc.data() } as AttendanceDoc;
+    if (!result[data.userId]) result[data.userId] = { in: null, out: null };
+    if (!result[data.userId].out) result[data.userId].out = data;
+  }
+
+  return result;
+};

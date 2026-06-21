@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useUserProfile } from '../../hooks/useUserProfile.ts';
-import { useLastPunchAttendance } from '../../hooks/useLastPunchAttendance.ts';
-import { usePunchAttendance } from '../../hooks/usePunchAttendance.ts';
+import { useUserProfile } from '../../hooks/get/useUserProfile.ts';
+import { useLastPunchAttendance } from '../../hooks/get/useLastPunchAttendance.ts';
+import { usePunchAttendance } from '../../hooks/post/usePunchAttendance.ts';
 import { getInitials } from '../../helpers/getInitials.ts';
 import { getGreeting } from '../../helpers/getGreetings.ts';
 import { formatClock } from '../../helpers/formats.ts';

@@ -2,8 +2,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createUserWithEmailAndPassword, getIdToken } from 'firebase/auth';
 import { FirebaseError } from 'firebase/app';
 import type { User } from 'firebase/auth';
-import { auth } from '../configs/firebase.ts';
-import type { UserProfileType } from '../types/types.ts';
+import { auth } from '../../configs/firebase.ts';
+import type { UserProfileType } from '../../types/types.ts';
 
 interface RegisterParams {
   password: string;

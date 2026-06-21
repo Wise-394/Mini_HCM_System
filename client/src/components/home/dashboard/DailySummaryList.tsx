@@ -5,7 +5,7 @@ import {
   formatDateLabel,
   formatHrs,
 } from '../../../helpers/formats.ts';
-import { useDailySummaryHistory } from '../../../hooks/useDailySummaryHistory.ts';
+import { useDailySummaryHistory } from '../../../hooks/get/useDailySummaryHistory.ts';
 import { useSelectedDateStore } from '../../../store/useSelectedStore.ts';
 
 const GRID =

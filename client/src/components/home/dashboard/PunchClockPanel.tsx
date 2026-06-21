@@ -1,8 +1,8 @@
 import { useEffect, useState, useMemo } from 'react';
 import { HiOutlineClock, HiOutlineBuildingOffice2 } from 'react-icons/hi2';
 import type { WorkSchedule, UserRole } from '../../../types/types.ts';
-import { useAttendance } from '../../../hooks/useAttendance.ts';
-import { useUserProfile } from '../../../hooks/useUserProfile.ts';
+import { useAttendance } from '../../../hooks/get/useAttendance.ts';
+import { useUserProfile } from '../../../hooks/get/useUserProfile.ts';
 import { formatClock, formatTimestamp } from '../../../helpers/formats.ts';
 
 interface PunchClockCardProps {

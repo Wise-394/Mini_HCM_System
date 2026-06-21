@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { getIdToken } from 'firebase/auth';
-import { auth } from '../configs/firebase.ts';
-import { useAuthStore } from '../store/useAuthStore.ts';
-import type { PunchType } from '../types/types.ts';
+import { auth } from '../../configs/firebase.ts';
+import { useAuthStore } from '../../store/useAuthStore.ts';
+import type { PunchType } from '../../types/types.ts';
 
 const postPunchAttendance = async (punchType: PunchType) => {
   const api = import.meta.env.VITE_BACKEND_API;

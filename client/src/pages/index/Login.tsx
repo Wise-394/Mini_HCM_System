@@ -1,6 +1,6 @@
 import type React from 'react';
 import { Link } from 'react-router';
-import { useLogin } from '../../hooks/useLogin.ts';
+import { useLogin } from '../../hooks/post/useLogin.ts';
 
 export const Login = () => {
   const { loginUser, isLoading, error } = useLogin();

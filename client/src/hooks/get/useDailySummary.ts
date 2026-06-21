@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { auth } from '../configs/firebase.ts';
+import { auth } from '../../configs/firebase.ts';
 import { getIdToken } from 'firebase/auth';
-import { useAuthStore } from '../store/useAuthStore.ts';
-import type { DailySummary } from '../types/types.ts';
+import { useAuthStore } from '../../store/useAuthStore.ts';
+import type { DailySummary } from '../../types/types.ts';
 
 const getDailySummaryByDate = async (
   userId: string,

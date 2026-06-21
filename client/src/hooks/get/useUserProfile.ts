@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { getIdToken } from 'firebase/auth';
-import { auth } from '../configs/firebase.ts';
-import type { UserProfileType } from '../types/types.ts';
-import { useAuthStore } from '../store/useAuthStore.ts';
+import { auth } from '../../configs/firebase.ts';
+import type { UserProfileType } from '../../types/types.ts';
+import { useAuthStore } from '../../store/useAuthStore.ts';
 
 const getUserProfile = async (
   uid: string | undefined

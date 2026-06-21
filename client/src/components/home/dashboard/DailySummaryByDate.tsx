@@ -11,7 +11,7 @@ import {
   HiOutlineExclamationTriangle,
   HiOutlineArrowUturnLeft,
 } from 'react-icons/hi2';
-import { useDailySummary } from '../../../hooks/useDailySummary.ts';
+import { useDailySummary } from '../../../hooks/get/useDailySummary.ts';
 import { useSelectedDateStore } from '../../../store/useSelectedStore.ts';
 
 const getTodayDate = () => new Date().toISOString().split('T')[0];

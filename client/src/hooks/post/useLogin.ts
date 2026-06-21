@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { FirebaseError } from 'firebase/app';
-import { auth } from '../configs/firebase.ts';
+import { auth } from '../../configs/firebase.ts';
 
 interface LoginParams {
   email: string;
