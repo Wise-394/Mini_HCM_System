@@ -1,17 +1,57 @@
-import { HiOutlineUsers } from 'react-icons/hi2';
+import { useNavigate } from 'react-router';
+import { HiOutlineUsers, HiOutlineChevronRight } from 'react-icons/hi2';
+import type { UserProfileType } from '../../types/types.ts';
 import { formatShiftTime } from '../../helpers/formats.ts';
 import { useAllEmployees } from '../../hooks/get/useAllEmployees.ts';
 
 const GRID =
-  'grid grid-cols-2 sm:grid-cols-4 gap-x-3 gap-y-1 sm:gap-x-4 sm:gap-y-0 sm:items-center';
+  'grid grid-cols-2 sm:grid-cols-[2fr_2fr_1.5fr_1fr_auto] gap-x-3 gap-y-1 sm:gap-x-4 sm:gap-y-0 sm:items-center';
 
-const RoleBadge = ({ role }: { role: string | null }) => {
-  const base =
-    'inline-block text-[10px] sm:text-xs font-medium px-2 py-0.5 rounded-full';
-  if (role === 'admin')
-    return <span className={`${base} bg-blue-50 text-blue-700`}>Admin</span>;
+const COLUMNS = ['Name', 'Email', 'Shift', 'Role', ''];
+
+const RoleBadge = ({ role }: { role: string | null }) => (
+  <span
+    className="inline-block text-[10px] sm:text-xs font-medium px-2 py-0.5
+      rounded-full text-gray-500"
+  >
+    {role ?? '—'}
+  </span>
+);
+
+const EmployeeRow = ({ emp }: { emp: UserProfileType }) => {
+  const navigate = useNavigate();
+
+  const shiftLabel = emp.schedule
+    ? `${formatShiftTime(emp.schedule.start)} – ${formatShiftTime(emp.schedule.end)}`
+    : '—';
+
   return (
-    <span className={`${base} bg-gray-100 text-gray-500`}>{role ?? '—'}</span>
+    <div
+      onClick={() => navigate(`/admin/employees/${emp.uid}`)}
+      className={`px-4 py-2.5 sm:px-6 sm:py-4 ${GRID} cursor-pointer
+        hover:bg-slate-50 transition-colors group`}
+    >
+      <div>
+        <p
+          className="font-semibold text-slate-900 text-xs sm:text-sm
+            leading-tight"
+        >
+          {emp.name}
+        </p>
+        <p className="text-[11px] text-slate-400 leading-tight">
+          {emp.timezone}
+        </p>
+      </div>
+      <p className="text-slate-500 text-xs sm:text-sm truncate">{emp.email}</p>
+      <p className="text-slate-500 text-xs sm:text-sm">{shiftLabel}</p>
+      <RoleBadge role={emp.role} />
+      <div className="hidden sm:flex justify-end">
+        <HiOutlineChevronRight
+          className="w-4 h-4 text-slate-300 group-hover:text-slate-500
+            transition-colors"
+        />
+      </div>
+    </div>
   );
 };
 
@@ -48,14 +88,13 @@ export const EmployeesList = () => {
 
           {/* Column headers — desktop only */}
           <div
-            className="hidden sm:grid sm:grid-cols-4 gap-x-4 px-6 py-3 text-xs
-              font-semibold text-gray-400 uppercase tracking-wide border-b
-              border-gray-100"
+            className="hidden sm:grid sm:grid-cols-[2fr_2fr_1.5fr_1fr_auto]
+              gap-x-4 px-6 py-3 text-xs font-semibold text-gray-400 uppercase
+              tracking-wide border-b border-gray-100"
           >
-            <div>Name</div>
-            <div>Email</div>
-            <div>Shift</div>
-            <div>Role</div>
+            {COLUMNS.map((col, i) => (
+              <div key={i}>{col}</div>
+            ))}
           </div>
 
           {/* Rows */}
@@ -75,35 +114,7 @@ export const EmployeesList = () => {
                 No employees found.
               </p>
             ) : (
-              employees.map((emp) => (
-                <div
-                  key={emp.uid}
-                  className={`px-4 py-2.5 sm:px-6 sm:py-4 ${GRID}`}
-                >
-                  <div>
-                    <p
-                      className="font-semibold text-slate-900 text-xs sm:text-sm
-                        leading-tight"
-                    >
-                      {emp.name}
-                    </p>
-                    <p className="text-[11px] text-slate-400 leading-tight">
-                      {emp.timezone}
-                    </p>
-                  </div>
-                  <p className="text-slate-500 text-xs sm:text-sm truncate">
-                    {emp.email}
-                  </p>
-                  <p className="text-slate-500 text-xs sm:text-sm">
-                    {emp.schedule
-                      ? `${formatShiftTime(emp.schedule.start)} – ${formatShiftTime(emp.schedule.end)}`
-                      : '—'}
-                  </p>
-                  <div>
-                    <RoleBadge role={emp.role} />
-                  </div>
-                </div>
-              ))
+              employees.map((emp) => <EmployeeRow key={emp.uid} emp={emp} />)
             )}
           </div>
         </section>

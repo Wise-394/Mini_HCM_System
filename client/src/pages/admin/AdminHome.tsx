@@ -1,90 +1,74 @@
-import { useEffect, useState } from 'react';
-import { useAuthStore } from '../../store/useAuthStore.ts';
-import { EmployeesKPI } from '../../components/admin/EmpployeesKPI.tsx';
-import { HiOutlineClock } from 'react-icons/hi2';
-import { EmployeesAttendanceList } from '../../components/admin/EmployeesAttendanceList.tsx';
+import { HiOutlineUsers } from 'react-icons/hi2';
+import { useAllEmployees } from '../../hooks/get/useAllEmployees.ts';
+import {
+  EmployeeRow,
+  GRID,
+} from '../../components/home/dashboard/EmployeeListRow.tsx';
 
-const getGreeting = () => {
-  const hour = new Date().getHours();
-  if (hour < 12) return 'Good morning';
-  if (hour < 18) return 'Good afternoon';
-  return 'Good evening';
-};
+const COLUMNS = ['Name', 'Email', 'Shift', 'Role', ''];
 
-const formatClock = (date: Date) =>
-  date.toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  });
-
-const formatDateLong = (date: Date) =>
-  date.toLocaleDateString('en-US', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-  });
-
-export const AdminHome = () => {
-  const user = useAuthStore((state) => state.user);
-  const [now, setNow] = useState(new Date());
-
-  useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  const displayName = user?.email ? user.email.split('@')[0] : 'Admin';
+export const EmployeesList = () => {
+  const { employees, isLoading } = useAllEmployees();
 
   return (
-    <main className="flex flex-1 flex-col bg-slate-50">
-      <div
-        className="max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 flex flex-col
-          gap-8"
-      >
-        {/* Page header */}
-        <div
-          className="flex flex-col sm:flex-row sm:items-end sm:justify-between
-            gap-4"
+    <main className="flex-1 p-4 sm:p-6 bg-slate-100">
+      <div className="max-w-7xl mx-auto">
+        <section
+          className="bg-white rounded-2xl border border-slate-200
+            overflow-hidden"
         >
-          <div>
-            <p
-              className="text-xs font-semibold uppercase tracking-wider
-                text-slate-400 mb-1"
-            >
-              Admin Dashboard
-            </p>
-            <h1
-              className="text-2xl sm:text-3xl font-extrabold text-slate-900
-                tracking-tight capitalize"
-            >
-              {getGreeting()}, {displayName}
-            </h1>
-          </div>
-
+          {/* Header */}
           <div
-            className="flex items-center gap-3 bg-white rounded-2xl border
-              border-slate-200 shadow-sm px-4 py-3 self-start sm:self-auto"
+            className="px-4 py-3 sm:px-6 sm:py-5 flex items-center gap-3
+              border-b border-gray-100"
           >
             <div
-              className="w-9 h-9 rounded-xl bg-slate-100 flex items-center
-                justify-center text-slate-500"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-100
+                text-gray-600 flex items-center justify-center"
             >
-              <HiOutlineClock className="w-5 h-5" />
+              <HiOutlineUsers className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <div className="leading-tight">
-              <p className="text-base font-bold text-slate-900 tabular-nums">
-                {formatClock(now)}
-              </p>
-              <p className="text-xs font-medium text-slate-400">
-                {formatDateLong(now)}
+            <div>
+              <h2 className="text-xs sm:text-sm font-bold text-slate-900">
+                Employees
+              </h2>
+              <p className="text-[11px] sm:text-xs font-medium text-gray-400">
+                All registered employees
               </p>
             </div>
           </div>
-        </div>
 
-        <EmployeesKPI />
-        <EmployeesAttendanceList />
+          {/* Column headers — desktop only */}
+          <div
+            className={`hidden sm:grid ${GRID} px-6 py-3 text-xs font-semibold
+              text-gray-400 uppercase tracking-wide border-b border-gray-100`}
+          >
+            {COLUMNS.map((col, i) => (
+              <div key={i}>{col}</div>
+            ))}
+          </div>
+
+          {/* Rows */}
+          <div className="divide-y divide-gray-100">
+            {isLoading ? (
+              <p
+                className="px-4 py-6 sm:px-6 sm:py-8 text-center text-gray-400
+                  text-sm"
+              >
+                Loading...
+              </p>
+            ) : !employees || employees.length === 0 ? (
+              <p
+                className="px-4 py-6 sm:px-6 sm:py-8 text-center text-gray-400
+                  text-sm"
+              >
+                No employees found.
+              </p>
+            ) : (
+              employees.map((emp) => <EmployeeRow key={emp.uid} emp={emp} />)
+            )}
+          </div>
+        </section>
       </div>
     </main>
   );
