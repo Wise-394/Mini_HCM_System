@@ -25,3 +25,14 @@ dist-ssr
 
 .env*
 .env.production
+
+# Firebase local cache and tokens
+.firebase/
+firebase-debug.log
+*ui.log
+
+# Local environment variables
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
