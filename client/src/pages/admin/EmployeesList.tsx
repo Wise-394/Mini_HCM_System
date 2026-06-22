@@ -3,7 +3,7 @@ import { useAllEmployees } from '../../hooks/get/useAllEmployees.ts';
 import {
   EmployeeRow,
   GRID,
-} from '../../components/home/dashboard/EmployeeListRow.tsx';
+} from '../../components/admin/EmployeesProfile/EmployeeListRow.tsx';
 
 const COLUMNS = ['Name', 'Email', 'Shift', 'Role', ''];
 

@@ -43,7 +43,8 @@ export const EmployeeAttendanceRow = ({
             onClick={handleEdit}
             type="button"
             className="inline-flex items-center gap-1 px-3 py-1.5 text-xs
-              font-medium text-slate-600 border border-slate-200 rounded-lg"
+              font-medium text-slate-600 border border-slate-200 rounded-lg
+              hover:cursor-pointer"
           >
             <HiOutlinePencilSquare className="w-4 h-4" />
             Edit

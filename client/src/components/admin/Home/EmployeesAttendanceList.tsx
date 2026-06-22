@@ -38,7 +38,6 @@ const AttendanceRow = ({
 
   return (
     <div key={userId} className={`px-4 py-2.5 sm:px-6 sm:py-4 ${GRID}`}>
-      {/* Name + shift (mobile subtitle) */}
       <div className="col-span-3 sm:col-span-1">
         <p
           className="font-semibold text-slate-900 text-xs sm:text-sm
@@ -117,7 +116,6 @@ export const EmployeesAttendanceList = () => {
         </div>
       </div>
 
-      {/* Column headers — desktop only */}
       <div
         className="hidden sm:grid sm:grid-cols-7 gap-x-4 px-6 py-3 text-xs
           font-semibold text-gray-400 uppercase tracking-wide border-b

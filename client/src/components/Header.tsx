@@ -29,7 +29,7 @@ interface DesktopNavProps {
 }
 
 interface MobileNavProps extends DesktopNavProps {
-  setIsOpen: (isOpen: boolean) => void;
+  close: () => void;
 }
 
 const DesktopNav = ({ user, handleLogout }: DesktopNavProps) => {
@@ -120,99 +120,62 @@ const DesktopNav = ({ user, handleLogout }: DesktopNavProps) => {
   );
 };
 
-const MobileNav = ({ user, handleLogout, setIsOpen }: MobileNavProps) => {
+const MobileNav = ({ user, handleLogout, close }: MobileNavProps) => {
+  const baseItem =
+    'flex items-center space-x-2 py-3 text-sm font-medium text-gray-600 hover:text-gray-900 active:text-gray-900 border-b border-gray-100 last:border-0';
+
   if (!user) {
     return (
-      <div
-        className="absolute top-16 left-0 right-0 md:hidden border-b
-          border-gray-200 bg-white px-6 py-4 space-y-4 shadow-lg z-50"
-      >
-        <nav
-          className="flex flex-col space-y-4 text-sm font-medium text-gray-600"
-        >
-          <Link
-            to="/register"
-            className="flex items-center space-x-2 hover:text-gray-900 py-1"
-            onClick={() => setIsOpen(false)}
-          >
-            <HiOutlineUserPlus className="h-5 w-5" />
-            <span>Register</span>
-          </Link>
-          <Link
-            to="/login"
-            className="flex items-center space-x-2 hover:text-gray-900 py-1"
-            onClick={() => setIsOpen(false)}
-          >
-            <HiOutlineArrowRightOnRectangle className="h-5 w-5" />
-            <span>Login</span>
-          </Link>
-        </nav>
-      </div>
+      <nav className="flex flex-col px-6 py-2">
+        <Link to="/register" className={baseItem} onClick={close}>
+          <HiOutlineUserPlus className="h-5 w-5" />
+          <span>Register</span>
+        </Link>
+        <Link to="/login" className={baseItem} onClick={close}>
+          <HiOutlineArrowRightOnRectangle className="h-5 w-5" />
+          <span>Login</span>
+        </Link>
+      </nav>
     );
   }
 
   if (user.role === 'admin') {
     return (
-      <div
-        className="absolute top-16 left-0 right-0 md:hidden border-b
-          border-gray-200 bg-white px-6 py-4 space-y-4 shadow-lg z-50"
-      >
-        <nav
-          className="flex flex-col space-y-4 text-sm font-medium text-gray-600"
-        >
-          <Link
-            to="/admin"
-            className="flex items-center space-x-2 hover:text-gray-900 py-1"
-            onClick={() => setIsOpen(false)}
-          >
-            <HiOutlineHome className="h-5 w-5" />
-            <span>Home</span>
-          </Link>
-          <button
-            onClick={handleLogout}
-            className="flex items-center space-x-2 hover:text-gray-900 py-1
-              text-left w-full"
-          >
-            <HiOutlineArrowLeftOnRectangle className="h-5 w-5" />
-            <span>Logout</span>
-          </button>
-        </nav>
-      </div>
-    );
-  }
-
-  return (
-    <div
-      className="absolute top-16 left-0 right-0 md:hidden border-b
-        border-gray-200 bg-white px-6 py-4 space-y-4 shadow-lg z-50"
-    >
-      <nav className="flex flex-col space-y-4 text-sm font-medium text-gray-600">
-        <Link
-          to="/home"
-          className="flex items-center space-x-2 hover:text-gray-900 py-1"
-          onClick={() => setIsOpen(false)}
-        >
+      <nav className="flex flex-col px-6 py-2">
+        <Link to="/admin" className={baseItem} onClick={close}>
           <HiOutlineHome className="h-5 w-5" />
           <span>Home</span>
         </Link>
-        <Link
-          to="/home/dashboard"
-          className="flex items-center space-x-2 hover:text-gray-900 py-1"
-          onClick={() => setIsOpen(false)}
-        >
-          <HiOutlineSquares2X2 className="h-5 w-5" />
-          <span>Dashboard</span>
+        <Link to="/admin/employees" className={baseItem} onClick={close}>
+          <HiOutlineUser className="h-5 w-5" />
+          <span>Employees</span>
         </Link>
         <button
           onClick={handleLogout}
-          className="flex items-center space-x-2 hover:text-gray-900 py-1
-            text-left w-full"
+          className={`${baseItem} w-full text-left`}
         >
           <HiOutlineArrowLeftOnRectangle className="h-5 w-5" />
           <span>Logout</span>
         </button>
       </nav>
-    </div>
+    );
+  }
+
+  return (
+    <nav className="flex flex-col px-6 py-2">
+      <Link to="/home" className={baseItem} onClick={close}>
+        <HiOutlineHome className="h-5 w-5" />
+        <span>Home</span>
+      </Link>
+      <Link to="/home/dashboard" className={baseItem} onClick={close}>
+        <HiOutlineSquares2X2 className="h-5 w-5" />
+        <span>Dashboard</span>
+      </Link>
+      <button onClick={handleLogout} className={`${baseItem} w-full text-left`}>
+        <HiOutlineArrowLeftOnRectangle className="h-5 w-5" />
+        <span>Logout</span>
+      </button>
+    </nav>
   );
 };
 
@@ -220,14 +183,17 @@ export const Header = () => {
   const user = useAuthStore((state) => state.user);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
+  const close = () => setIsOpen(false);
+
   const handleLogout = async () => {
     await signOut(auth);
-    setIsOpen(false);
+    close();
   };
 
   return (
-    <header className="w-full bg-white border-b border-gray-200 sticky top-0
-      z-50">
+    <header
+      className="w-full bg-white border-b border-gray-200 sticky top-0 z-50"
+    >
       <div
         className="max-w-7xl mx-auto px-6 h-16 flex items-center
           justify-between"
@@ -237,7 +203,7 @@ export const Header = () => {
           to="/"
           className="flex items-center space-x-2 text-xl font-bold
             text-gray-800"
-          onClick={() => setIsOpen(false)}
+          onClick={close}
         >
           <HiOutlineClock className="h-6 w-6 text-gray-600" />
           <span>HCM</span>
@@ -248,7 +214,7 @@ export const Header = () => {
         {/* Toggle Button */}
         <div className="flex md:hidden">
           <button
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => setIsOpen((prev) => !prev)}
             className="text-gray-600 hover:text-gray-900 focus:outline-none"
           >
             {isOpen ? (
@@ -260,13 +226,18 @@ export const Header = () => {
         </div>
       </div>
 
-      {isOpen && (
-        <MobileNav
-          user={user}
-          handleLogout={handleLogout}
-          setIsOpen={setIsOpen}
-        />
-      )}
+      {/* Mobile menu */}
+      <div
+        className={`absolute top-16 left-0 right-0 md:hidden border-b
+          border-gray-200 bg-white shadow-lg transition-all duration-300
+          ease-in-out ${
+            isOpen
+              ? 'opacity-100 translate-y-0'
+              : 'opacity-0 -translate-y-2 pointer-events-none'
+          }`}
+      >
+        <MobileNav user={user} handleLogout={handleLogout} close={close} />
+      </div>
     </header>
   );
 };

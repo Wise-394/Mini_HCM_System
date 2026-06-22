@@ -25,8 +25,8 @@ export const EmployeeRow = ({ emp }: { emp: UserProfileType }) => {
   return (
     <div
       onClick={() => navigate(`/admin/employees/${emp.uid}`)}
-      className={`px-4 py-2.5 sm:px-6 sm:py-4 ${GRID} cursor-pointer
-        hover:bg-slate-50 transition-colors group`}
+      className={`relative px-4 py-2.5 sm:px-6 sm:py-4 ${GRID} cursor-pointer
+        hover:bg-slate-50 active:bg-slate-50 transition-colors group`}
     >
       <div>
         <p
@@ -39,15 +39,16 @@ export const EmployeeRow = ({ emp }: { emp: UserProfileType }) => {
           {emp.timezone}
         </p>
       </div>
-      <p className="text-slate-500 text-xs sm:text-sm truncate">{emp.email}</p>
+      <p className="text-slate-500 text-xs sm:text-sm truncate pr-5 sm:pr-0">
+        {emp.email}
+      </p>
       <p className="text-slate-500 text-xs sm:text-sm">{shiftLabel}</p>
       <RoleBadge role={emp.role} />
-      <div className="hidden sm:flex justify-end">
-        <HiOutlineChevronRight
-          className="w-4 h-4 text-slate-300 group-hover:text-slate-500
-            transition-colors"
-        />
-      </div>
+      <HiOutlineChevronRight
+        className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4
+          text-slate-300 group-hover:text-slate-500 transition-colors sm:static
+          sm:translate-y-0"
+      />
     </div>
   );
 };
