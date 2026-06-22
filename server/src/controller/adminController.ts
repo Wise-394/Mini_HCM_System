@@ -1,12 +1,16 @@
 //some controllers are reused from employees and arent in admin controller
 //check adminRoute.ts to view all controllers used by admin
 import type { Request, Response, NextFunction } from 'express';
+import type { DailyAttendance } from '../types/types.js';
+import { computeDailySummary } from '../services/computeDailySummaryService.js';
+import { putAttendanceByDate } from '../services/adminService.js';
 import { readAllAttendanceWithDailySummaryOfUser } from '../services/adminService.js';
 import {
   computeAdminDailyKpis,
   readAllEmployees,
 } from '../services/adminService.js';
 import { readAllUsersAttendanceByDate } from '../services/adminService.js';
+
 export const getKPIOfAllEmployees = async (
   req: Request,
   res: Response,
@@ -80,5 +84,36 @@ export const getAllAttendanceOfUser = async (
       console.error('getAllUserAttendance error:', err.message);
     }
     return res.status(500).json({ message: 'Failed to retrieve attendance.' });
+  }
+};
+
+export const updateAttendanceByDate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const userId = req.params.userId as string;
+    const date = req.params.date as string;
+    const { in: punchIn, out: punchOut } = req.body;
+
+    if (!punchIn && !punchOut) {
+      res
+        .status(400)
+        .json({ error: 'Provide at least one punch (in or out) to update.' });
+      return;
+    }
+
+    await putAttendanceByDate(userId, date, { in: punchIn, out: punchOut });
+    await computeDailySummary(userId, date);
+
+    res
+      .status(200)
+      .json({ message: `Attendance for ${userId} on ${date} updated.` });
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error('putAttendanceByDate error:', err.message);
+    }
+    res.status(500).json({ message: 'Failed to update attendance.' });
   }
 };

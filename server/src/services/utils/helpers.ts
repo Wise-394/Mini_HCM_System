@@ -1,4 +1,5 @@
 import type { WorkSchedule } from '../../types/types.js';
+import { Timestamp } from 'firebase-admin/firestore';
 
 export const getTodayManila = (): string =>
   new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });
@@ -27,3 +28,8 @@ export const getShiftLengthHours = (schedule: WorkSchedule): number => {
 
   return (endMinutes - startMinutes) / 60;
 };
+
+export const toTimestamp = (value: any): Timestamp =>
+  value instanceof Timestamp
+    ? value
+    : new Timestamp(value._seconds, value._nanoseconds);

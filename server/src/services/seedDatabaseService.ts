@@ -74,6 +74,7 @@ export const seedDatabaseIfEmpty = async () => {
     }
 
     const attendance = [
+      // user-001 (09:00-18:00)
       {
         id: 'att-021',
         userId: 'user-001',
@@ -88,6 +89,36 @@ export const seedDatabaseIfEmpty = async () => {
         date: '2026-06-20',
         timestamp: Timestamp.fromDate(new Date('2026-06-20T18:00:00+08:00')),
       },
+      {
+        id: 'att-023',
+        userId: 'user-001',
+        type: 'in',
+        date: '2026-06-21',
+        timestamp: Timestamp.fromDate(new Date('2026-06-21T09:15:00+08:00')),
+      },
+      {
+        id: 'att-024',
+        userId: 'user-001',
+        type: 'out',
+        date: '2026-06-21',
+        timestamp: Timestamp.fromDate(new Date('2026-06-21T18:00:00+08:00')),
+      },
+      {
+        id: 'att-025',
+        userId: 'user-001',
+        type: 'in',
+        date: '2026-06-22',
+        timestamp: Timestamp.fromDate(new Date('2026-06-22T09:00:00+08:00')),
+      },
+      {
+        id: 'att-026',
+        userId: 'user-001',
+        type: 'out',
+        date: '2026-06-22',
+        timestamp: Timestamp.fromDate(new Date('2026-06-22T19:00:00+08:00')),
+      },
+
+      // user-002 (09:00-18:00)
       {
         id: 'att-002',
         userId: 'user-002',
@@ -151,6 +182,36 @@ export const seedDatabaseIfEmpty = async () => {
         date: '2026-06-20',
         timestamp: Timestamp.fromDate(new Date('2026-06-20T18:00:00+08:00')),
       },
+      {
+        id: 'att-027',
+        userId: 'user-002',
+        type: 'in',
+        date: '2026-06-21',
+        timestamp: Timestamp.fromDate(new Date('2026-06-21T09:00:00+08:00')),
+      },
+      {
+        id: 'att-028',
+        userId: 'user-002',
+        type: 'out',
+        date: '2026-06-21',
+        timestamp: Timestamp.fromDate(new Date('2026-06-21T20:00:00+08:00')),
+      },
+      {
+        id: 'att-029',
+        userId: 'user-002',
+        type: 'in',
+        date: '2026-06-22',
+        timestamp: Timestamp.fromDate(new Date('2026-06-22T09:30:00+08:00')),
+      },
+      {
+        id: 'att-030',
+        userId: 'user-002',
+        type: 'out',
+        date: '2026-06-22',
+        timestamp: Timestamp.fromDate(new Date('2026-06-22T18:00:00+08:00')),
+      },
+
+      // user-003 (22:00-06:00)
       {
         id: 'att-011',
         userId: 'user-003',
@@ -221,6 +282,34 @@ export const seedDatabaseIfEmpty = async () => {
         date: '2026-06-20',
         timestamp: Timestamp.fromDate(new Date('2026-06-21T06:00:00+08:00')),
       },
+      {
+        id: 'att-031',
+        userId: 'user-003',
+        type: 'in',
+        date: '2026-06-21',
+        timestamp: Timestamp.fromDate(new Date('2026-06-21T22:00:00+08:00')),
+      },
+      {
+        id: 'att-032',
+        userId: 'user-003',
+        type: 'out',
+        date: '2026-06-21',
+        timestamp: Timestamp.fromDate(new Date('2026-06-22T06:00:00+08:00')),
+      },
+      {
+        id: 'att-033',
+        userId: 'user-003',
+        type: 'in',
+        date: '2026-06-22',
+        timestamp: Timestamp.fromDate(new Date('2026-06-22T22:30:00+08:00')),
+      },
+      {
+        id: 'att-034',
+        userId: 'user-003',
+        type: 'out',
+        date: '2026-06-22',
+        timestamp: Timestamp.fromDate(new Date('2026-06-23T06:00:00+08:00')),
+      },
     ];
 
     attendance.forEach((att) => {
@@ -229,6 +318,7 @@ export const seedDatabaseIfEmpty = async () => {
     });
 
     const dailySummaries = [
+      // user-001
       {
         userId: 'user-001',
         date: '2026-06-20',
@@ -240,6 +330,30 @@ export const seedDatabaseIfEmpty = async () => {
         lateMinutes: 0,
         undertimeMinutes: 0,
       },
+      {
+        userId: 'user-001',
+        date: '2026-06-21',
+        status: 'present',
+        hoursWorked: 8.75,
+        regularHours: 8.75,
+        overtimeHours: 0,
+        nightDifferentialHours: 0,
+        lateMinutes: 15,
+        undertimeMinutes: 0,
+      },
+      {
+        userId: 'user-001',
+        date: '2026-06-22',
+        status: 'present',
+        hoursWorked: 10,
+        regularHours: 9,
+        overtimeHours: 1,
+        nightDifferentialHours: 0,
+        lateMinutes: 0,
+        undertimeMinutes: 0,
+      },
+
+      // user-002
       {
         userId: 'user-002',
         date: '2026-06-16',
@@ -296,6 +410,30 @@ export const seedDatabaseIfEmpty = async () => {
         undertimeMinutes: 0,
       },
       {
+        userId: 'user-002',
+        date: '2026-06-21',
+        status: 'present',
+        hoursWorked: 11,
+        regularHours: 9,
+        overtimeHours: 2,
+        nightDifferentialHours: 0,
+        lateMinutes: 0,
+        undertimeMinutes: 0,
+      },
+      {
+        userId: 'user-002',
+        date: '2026-06-22',
+        status: 'present',
+        hoursWorked: 8.5,
+        regularHours: 8.5,
+        overtimeHours: 0,
+        nightDifferentialHours: 0,
+        lateMinutes: 30,
+        undertimeMinutes: 0,
+      },
+
+      // user-003
+      {
         userId: 'user-003',
         date: '2026-06-16',
         status: 'present',
@@ -348,6 +486,28 @@ export const seedDatabaseIfEmpty = async () => {
         overtimeHours: 0,
         nightDifferentialHours: 8,
         lateMinutes: 0,
+        undertimeMinutes: 0,
+      },
+      {
+        userId: 'user-003',
+        date: '2026-06-21',
+        status: 'present',
+        hoursWorked: 8,
+        regularHours: 8,
+        overtimeHours: 0,
+        nightDifferentialHours: 8,
+        lateMinutes: 0,
+        undertimeMinutes: 0,
+      },
+      {
+        userId: 'user-003',
+        date: '2026-06-22',
+        status: 'present',
+        hoursWorked: 7.5,
+        regularHours: 7.5,
+        overtimeHours: 0,
+        nightDifferentialHours: 7.5,
+        lateMinutes: 30,
         undertimeMinutes: 0,
       },
     ];

@@ -4,7 +4,7 @@ import { HiOutlinePencilSquare } from 'react-icons/hi2';
 import { useAttendanceEditModalStore } from '../../../store/attendanceEditModalStore.ts';
 
 export const GRID =
-  'sm:grid-cols-[1.5fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_auto] sm:gap-4 sm:items-center';
+  'sm:grid-cols-[1.5fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_auto] sm:gap-4 sm:items-center';
 
 const Stat = ({ label, value }: { label: string; value: string }) => (
   <div className="min-w-0">
@@ -16,17 +16,18 @@ const Stat = ({ label, value }: { label: string; value: string }) => (
 );
 
 export const EmployeeAttendanceRow = ({
+  userId,
   date,
   record,
 }: {
+  userId: string;
   date: string;
   record: DailyAttendanceWithSummary;
 }) => {
   const openModal = useAttendanceEditModalStore((state) => state.openModal);
-  const isAbsent = !record.in && !record.out;
   const summary = record.summary;
 
-  const handleEdit = () => openModal(date, record);
+  const handleEdit = () => openModal(userId, date, record);
 
   return (
     <>
@@ -36,9 +37,6 @@ export const EmployeeAttendanceRow = ({
           <div>
             <p className="font-semibold text-slate-900">
               {formatDateLabel(date)}
-            </p>
-            <p className="text-xs text-gray-500 mt-1">
-              Status: {isAbsent ? 'Absent' : (summary?.status ?? '—')}
             </p>
           </div>
           <button
@@ -127,16 +125,12 @@ export const EmployeeAttendanceRow = ({
               : '—'
           }
         />
-        <Stat
-          label="Status"
-          value={isAbsent ? 'Absent' : (summary?.status ?? '—')}
-        />
         <button
           type="button"
           onClick={handleEdit}
           className="inline-flex items-center gap-1 px-3 py-1.5 text-xs
             font-medium text-slate-600 border border-slate-200 rounded-lg
-            hover:bg-slate-50"
+            hover:bg-slate-50 hover:cursor-pointer"
         >
           <HiOutlinePencilSquare className="w-4 h-4" />
           Edit

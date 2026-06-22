@@ -5,7 +5,13 @@ type AttendanceEditModalState = {
   isOpen: boolean;
   selectedDate: string | null;
   selectedRecord: DailyAttendanceWithSummary | null;
-  openModal: (date: string, record: DailyAttendanceWithSummary) => void;
+  selectedUserId: string | null;
+
+  openModal: (
+    userId: string,
+    date: string,
+    record: DailyAttendanceWithSummary
+  ) => void; // add userId
   closeModal: () => void;
 };
 
@@ -14,11 +20,22 @@ export const useAttendanceEditModalStore = create<AttendanceEditModalState>(
     isOpen: false,
     selectedDate: null,
     selectedRecord: null,
+    selectedUserId: null,
 
-    openModal: (date, record) =>
-      set({ isOpen: true, selectedDate: date, selectedRecord: record }),
+    openModal: (userId, date, record) =>
+      set({
+        isOpen: true,
+        selectedUserId: userId,
+        selectedDate: date,
+        selectedRecord: record,
+      }),
 
     closeModal: () =>
-      set({ isOpen: false, selectedDate: null, selectedRecord: null }),
-  }),
+      set({
+        isOpen: false,
+        selectedDate: null,
+        selectedRecord: null,
+        selectedUserId: null,
+      }),
+  })
 );

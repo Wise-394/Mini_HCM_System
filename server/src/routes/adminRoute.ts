@@ -6,6 +6,7 @@ import {
   getAllEmployees,
   getAllUsersAttendanceByDate,
   getKPIOfAllEmployees,
+  updateAttendanceByDate,
 } from '../controller/adminController.js';
 
 export const adminRouter = Router();
@@ -23,3 +24,4 @@ adminRouter.get('/kpi/:date', getKPIOfAllEmployees);
 adminRouter.get('/daily-summar/:date', getAllUsersAttendanceByDate);
 adminRouter.get('/employees', getAllEmployees);
 adminRouter.get('/attendance/:userId', getAllAttendanceOfUser);
+adminRouter.put('/attendance/:userId/:date', updateAttendanceByDate);

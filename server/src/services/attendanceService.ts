@@ -1,6 +1,8 @@
 import type { AttendanceDoc } from '../types/types.js';
 import { getFirestore } from 'firebase-admin/firestore';
 import type { DailyAttendance } from '../types/types.js';
+import { toTimestamp } from './utils/helpers.js';
+
 export const createAttendanceDoc = async (attendanceDoc: AttendanceDoc) => {
   const db = getFirestore();
   await db.collection('attendance').add(attendanceDoc);
@@ -31,6 +33,7 @@ export const readActiveSession = async (
   userId: string
 ): Promise<AttendanceDoc | null> => {
   const db = getFirestore();
+  const { Timestamp } = await import('firebase-admin/firestore');
   const MAX_SHIFT_HOURS = 20;
 
   const result = await db
@@ -46,8 +49,15 @@ export const readActiveSession = async (
   const lastPunch = { id: doc.id, ...doc.data() } as AttendanceDoc;
 
   if (lastPunch.type === 'in') {
-    const hoursSince =
-      (Date.now() - lastPunch.timestamp.toMillis()) / (1000 * 60 * 60);
+    const ts =
+      lastPunch.timestamp instanceof Timestamp
+        ? lastPunch.timestamp
+        : new Timestamp(
+            (lastPunch.timestamp as any)._seconds,
+            (lastPunch.timestamp as any)._nanoseconds
+          );
+
+    const hoursSince = (Date.now() - ts.toMillis()) / (1000 * 60 * 60);
     if (hoursSince > MAX_SHIFT_HOURS) return null;
   }
 
@@ -77,10 +87,16 @@ export const readAttendanceOfUserByDate = async (
       .get(),
   ]);
 
-  const toDoc = (snap: typeof inResult) =>
-    snap.empty
-      ? null
-      : ({ id: snap.docs[0].id, ...snap.docs[0].data() } as AttendanceDoc);
+  const toDoc = (snap: typeof inResult) => {
+    if (snap.empty) return null;
+    const doc = snap.docs[0];
+    const data = doc.data();
+    return {
+      id: doc.id,
+      ...data,
+      timestamp: toTimestamp(data.timestamp),
+    } as AttendanceDoc;
+  };
 
   return {
     in: toDoc(inResult),

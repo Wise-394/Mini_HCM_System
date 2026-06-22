@@ -1,6 +1,5 @@
 import { getFirestore } from 'firebase-admin/firestore';
-import type { DailySummary, AdminDailyKpis } from '../types/types.js';
-import { roundHours } from './utils/helpers.js';
+import type { DailySummary } from '../types/types.js';
 
 export const saveDailySummary = async (summary: DailySummary) => {
   const db = getFirestore();

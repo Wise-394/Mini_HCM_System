@@ -3,12 +3,12 @@ import type {
   UserProfileType,
   DailySummary,
   AdminDailyKpis,
-  DailyAttendance,
   AttendanceDoc,
   DailyAttendanceWithSummary,
+  PunchType,
 } from '../types/types.js';
 import { roundHours } from './utils/helpers.js';
-
+import type { Timestamp } from 'firebase-admin/firestore';
 //--------------EMPLOYEES
 export const readAllEmployees = async (): Promise<UserProfileType[]> => {
   const db = getFirestore();
@@ -186,4 +186,63 @@ export const readAllAttendanceWithDailySummaryOfUser = async (
   }
 
   return result;
+};
+
+type PutAttendanceByDatePayload = {
+  in?: Timestamp;
+  out?: Timestamp;
+};
+
+export const putAttendanceByDate = async (
+  userId: string,
+  date: string,
+  payload: PutAttendanceByDatePayload
+): Promise<void> => {
+  const db = getFirestore();
+
+  const snapshot = await db
+    .collection('attendance')
+    .where('userId', '==', userId)
+    .where('date', '==', date)
+    .get();
+
+  const docsByType: Partial<
+    Record<PunchType, FirebaseFirestore.QueryDocumentSnapshot>
+  > = {};
+  for (const doc of snapshot.docs) {
+    const data = doc.data() as AttendanceDoc;
+    docsByType[data.type] = doc;
+  }
+
+  const batch = db.batch();
+
+  if (payload.in) {
+    if (docsByType['in']) {
+      batch.update(docsByType['in'].ref, { timestamp: payload.in });
+    } else {
+      const newRef = db.collection('attendance').doc();
+      batch.set(newRef, {
+        userId,
+        date,
+        type: 'in',
+        timestamp: payload.in,
+      } satisfies AttendanceDoc);
+    }
+  }
+
+  if (payload.out) {
+    if (docsByType['out']) {
+      batch.update(docsByType['out'].ref, { timestamp: payload.out });
+    } else {
+      const newRef = db.collection('attendance').doc();
+      batch.set(newRef, {
+        userId,
+        date,
+        type: 'out',
+        timestamp: payload.out,
+      } satisfies AttendanceDoc);
+    }
+  }
+
+  await batch.commit();
 };

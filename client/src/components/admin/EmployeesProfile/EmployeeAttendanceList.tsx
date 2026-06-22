@@ -11,7 +11,6 @@ const COLUMNS = [
   'Overtime',
   'Late',
   'Undertime',
-  'Status',
   '',
 ];
 
@@ -76,7 +75,11 @@ export const EmployeeAttendanceList = ({ userId }: { userId: string }) => {
         ) : (
           rows.map(([date, record]) => (
             <div key={date} className="border-b border-gray-100 last:border-0">
-              <EmployeeAttendanceRow date={date} record={record} />
+              <EmployeeAttendanceRow
+                userId={userId}
+                date={date}
+                record={record}
+              />
             </div>
           ))
         )}
