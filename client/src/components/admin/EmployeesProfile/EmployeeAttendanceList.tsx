@@ -27,7 +27,6 @@ export const EmployeeAttendanceList = ({ userId }: { userId: string }) => {
     <section
       className="bg-white rounded-2xl border border-slate-200 overflow-hidden"
     >
-      {/* Header */}
       <div
         className="px-4 py-3 sm:px-6 sm:py-5 flex items-center gap-3 border-b
           border-gray-100"
@@ -38,30 +37,28 @@ export const EmployeeAttendanceList = ({ userId }: { userId: string }) => {
         >
           <HiOutlineClipboardDocumentList className="w-4 h-4 sm:w-5 sm:h-5" />
         </div>
-
         <div>
           <h2 className="text-xs sm:text-sm font-bold text-slate-900">
             Attendance History
           </h2>
-
           <p className="text-[11px] sm:text-xs font-medium text-gray-400">
             Clock in and out records
           </p>
         </div>
       </div>
 
-      {/* Column headers — desktop only */}
       <div
         className={`hidden sm:grid ${GRID} px-6 py-3 text-xs font-semibold
           text-gray-400 uppercase tracking-wide border-b border-gray-100`}
       >
-        {COLUMNS.map((col) => (
-          <div key={col}>{col}</div>
+        {COLUMNS.map((col, i) => (
+          <div key={i} className={i === COLUMNS.length - 1 ? 'w-16' : ''}>
+            {col}
+          </div>
         ))}
       </div>
 
-      {/* Rows */}
-      <div className="divide-y divide-gray-100">
+      <div>
         {isAttendanceLoading ? (
           <p
             className="px-4 py-6 sm:px-6 sm:py-8 text-center text-gray-400
@@ -78,7 +75,9 @@ export const EmployeeAttendanceList = ({ userId }: { userId: string }) => {
           </p>
         ) : (
           rows.map(([date, record]) => (
-            <EmployeeAttendanceRow key={date} date={date} record={record} />
+            <div key={date} className="border-b border-gray-100 last:border-0">
+              <EmployeeAttendanceRow date={date} record={record} />
+            </div>
           ))
         )}
       </div>
