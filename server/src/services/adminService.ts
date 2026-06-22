@@ -135,21 +135,42 @@ export const readAllUsersAttendanceByDate = async (
   return result;
 };
 
-export const readAllAttendanceOfUser = async (
+export const readAllSummariesOfUser = async (
   userId: string
-): Promise<Record<string, DailyAttendance>> => {
+): Promise<DailySummary[]> => {
+  const db = getFirestore();
+  const snapshot = await db
+    .collection('dailySummary')
+    .where('userId', '==', userId)
+    .get();
+
+  return snapshot.docs.map((doc) => doc.data() as DailySummary);
+};
+
+export const readAllAttendanceWithDailySummaryOfUser = async (
+  userId: string
+): Promise<Record<string, DailyAttendanceWithSummary>> => {
   const db = getFirestore();
   const baseQuery = db.collection('attendance').where('userId', '==', userId);
 
-  const [inResult, outResult] = await Promise.all([
+  const [inResult, outResult, summaries] = await Promise.all([
     baseQuery.where('type', '==', 'in').orderBy('timestamp', 'asc').get(),
     baseQuery.where('type', '==', 'out').orderBy('timestamp', 'asc').get(),
+    readAllSummariesOfUser(userId),
   ]);
 
-  const result: Record<string, DailyAttendance> = {};
+  const summaryByDate = new Map(summaries.map((s) => [s.date, s]));
+
+  const result: Record<string, DailyAttendanceWithSummary> = {};
 
   const ensureEntry = (date: string) => {
-    if (!result[date]) result[date] = { in: null, out: null };
+    if (!result[date]) {
+      result[date] = {
+        in: null,
+        out: null,
+        summary: summaryByDate.get(date) ?? null,
+      };
+    }
   };
 
   for (const doc of inResult.docs) {

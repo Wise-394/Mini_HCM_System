@@ -1,7 +1,7 @@
 //some controllers are reused from employees and arent in admin controller
 //check adminRoute.ts to view all controllers used by admin
 import type { Request, Response, NextFunction } from 'express';
-import { readAllAttendanceOfUser } from '../services/adminService.js';
+import { readAllAttendanceWithDailySummaryOfUser } from '../services/adminService.js';
 import {
   computeAdminDailyKpis,
   readAllEmployees,
@@ -73,7 +73,7 @@ export const getAllAttendanceOfUser = async (
     if (!userId || typeof userId !== 'string') {
       return res.status(400).json({ message: 'Invalid userId parameter.' });
     }
-    const attendance = await readAllAttendanceOfUser(userId);
+    const attendance = await readAllAttendanceWithDailySummaryOfUser(userId);
     return res.status(200).json({ data: attendance });
   } catch (err) {
     if (err instanceof Error) {

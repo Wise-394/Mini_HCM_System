@@ -1,11 +1,23 @@
 import { HiOutlineClipboardDocumentList } from 'react-icons/hi2';
-import { useAllAttendanceOfUser } from '../../../hooks/get/useAllAttendanceOfUser.ts';
+import { useAllAttendanceWithDailySummaryOfUser } from '../../../hooks/get/useAllAttendanceWithDailySummaryOfUser.ts';
 import { EmployeeAttendanceRow, GRID } from './EmployeeAttendanceRow.tsx';
 
-const COLUMNS = ['Date', 'Time In', 'Time Out'];
+const COLUMNS = [
+  'Date',
+  'Time In',
+  'Time Out',
+  'Hours Worked',
+  'Regular',
+  'Overtime',
+  'Late',
+  'Undertime',
+  'Status',
+  '',
+];
 
 export const EmployeeAttendanceList = ({ userId }: { userId: string }) => {
-  const { attendance, isAttendanceLoading } = useAllAttendanceOfUser(userId);
+  const { attendance, isAttendanceLoading } =
+    useAllAttendanceWithDailySummaryOfUser(userId);
 
   const rows = attendance
     ? Object.entries(attendance).sort(([a], [b]) => b.localeCompare(a))
@@ -26,10 +38,12 @@ export const EmployeeAttendanceList = ({ userId }: { userId: string }) => {
         >
           <HiOutlineClipboardDocumentList className="w-4 h-4 sm:w-5 sm:h-5" />
         </div>
+
         <div>
           <h2 className="text-xs sm:text-sm font-bold text-slate-900">
             Attendance History
           </h2>
+
           <p className="text-[11px] sm:text-xs font-medium text-gray-400">
             Clock in and out records
           </p>

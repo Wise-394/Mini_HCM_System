@@ -2,11 +2,11 @@ import { useQuery } from '@tanstack/react-query';
 import { auth } from '../../configs/firebase.ts';
 import { getIdToken } from 'firebase/auth';
 import { useAuthStore } from '../../store/useAuthStore.ts';
-import type { DailyAttendance } from '../../types/types.ts';
+import type { DailyAttendanceWithSummary } from '../../types/types.ts';
 
 const getAllAttendanceOfUser = async (
   userId: string
-): Promise<Record<string, DailyAttendance>> => {
+): Promise<Record<string, DailyAttendanceWithSummary>> => {
   const api = import.meta.env.VITE_BACKEND_API;
   const user = auth.currentUser;
   if (!user) throw new Error('Not authenticated');
@@ -28,7 +28,7 @@ const getAllAttendanceOfUser = async (
   return data.data;
 };
 
-export const useAllAttendanceOfUser = (userId: string) => {
+export const useAllAttendanceWithDailySummaryOfUser = (userId: string) => {
   const user = useAuthStore((state) => state.user);
   const isAuthLoading = useAuthStore((state) => state.isAuthLoading);
 
