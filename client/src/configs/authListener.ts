@@ -10,7 +10,8 @@ import type { UserProfileType } from '../types/types.ts';
 const API_BASE_URL = import.meta.env.VITE_BACKEND_API;
 
 export const initAuthListener = () => {
-  const { login, logout, setAuthLoading } = useAuthStore.getState();
+  const { login, logout, setAuthLoading, setRedirecting } =
+    useAuthStore.getState();
 
   onAuthStateChanged(auth, async (user) => {
     if (user && user.email) {
@@ -32,6 +33,7 @@ export const initAuthListener = () => {
       } catch (err) {
         if (err instanceof Error) console.error(err.message);
         logout();
+        setRedirecting(false);
       }
     } else {
       logout();

@@ -37,6 +37,7 @@ app.use(express.urlencoded({ extended: false }));
 
 await seedDatabaseIfEmpty();
 
+app.get('/health', (req, res) => res.sendStatus(200));
 app.use('/users', usersRouter);
 app.use('/attendance', attendanceRouter);
 app.use('/daily-summaries', dailySummaryRouter);

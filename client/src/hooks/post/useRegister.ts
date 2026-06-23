@@ -4,6 +4,7 @@ import { FirebaseError } from 'firebase/app';
 import type { User } from 'firebase/auth';
 import { auth } from '../../configs/firebase.ts';
 import type { UserProfileType } from '../../types/types.ts';
+import { useAuthStore } from '../../store/useAuthStore.ts';
 
 //----------------------------------------------------------------
 //Responsible for register
@@ -65,6 +66,8 @@ const registerUser = async ({
       throw new Error(serverError.message || 'Failed to register user.');
     }
 
+    useAuthStore.getState().setRedirecting(true);
+
     return { user: createdUser, idToken };
   } catch (err) {
     if (createdUser) {
@@ -84,6 +87,7 @@ const registerUser = async ({
 
 export const useRegister = () => {
   const queryClient = useQueryClient();
+  const isRedirecting = useAuthStore((state) => state.isRedirecting);
 
   const { mutateAsync, isPending, error } = useMutation({
     mutationFn: registerUser,
@@ -97,7 +101,7 @@ export const useRegister = () => {
 
   return {
     registerUser: mutateAsync,
-    isLoading: isPending,
+    isLoading: isPending || isRedirecting,
     error: error?.message || null,
   };
 };

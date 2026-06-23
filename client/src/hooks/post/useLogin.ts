@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { FirebaseError } from 'firebase/app';
 import { auth } from '../../configs/firebase.ts';
+import { useAuthStore } from '../../store/useAuthStore.ts';
 
 //----------------------------------------------------------------
 //Responsible for logging into firebase auth
@@ -23,6 +24,7 @@ const FIREBASE_ERROR_MESSAGES: Record<string, string> = {
 const loginUser = async ({ email, password }: LoginParams) => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
+    useAuthStore.getState().setRedirecting(true);
   } catch (err) {
     if (err instanceof FirebaseError) {
       const message =
@@ -34,13 +36,15 @@ const loginUser = async ({ email, password }: LoginParams) => {
 };
 
 export const useLogin = () => {
+  const isRedirecting = useAuthStore((state) => state.isRedirecting);
+
   const { mutateAsync, isPending, error } = useMutation({
     mutationFn: loginUser,
   });
 
   return {
     loginUser: mutateAsync,
-    isLoading: isPending,
+    isLoading: isPending || isRedirecting,
     error: error?.message ?? null,
   };
 };
