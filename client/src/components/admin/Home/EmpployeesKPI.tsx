@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   HiOutlineUserGroup,
   HiOutlineCheckCircle,
@@ -25,21 +25,34 @@ type KpiDatePickerProps = {
 };
 
 const KpiDatePicker = ({ value, onChange }: KpiDatePickerProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
   return (
-    <label
-      className="flex items-center gap-2 bg-white rounded-xl border
-        border-slate-200 px-3 py-2 shadow-sm cursor-pointer"
-    >
-      <HiOutlineCalendarDays className="w-4 h-4 text-slate-400" />
-      <input
-        type="date"
-        value={value}
-        max={getTodayDate()}
-        onChange={(e) => onChange(e.target.value)}
-        className="text-xs font-semibold text-slate-700 outline-none
-          bg-transparent"
-      />
-    </label>
+    <div className="flex flex-col gap-1">
+      <span
+        className="text-[10px] font-medium text-slate-400 uppercase
+          tracking-wide leading-none mb-0.5"
+      >
+        Click to change date
+      </span>
+      <div
+        onClick={() => inputRef.current?.showPicker()}
+        className="flex items-center gap-2 bg-white rounded-lg border-[1.5px]
+          border-slate-200 px-3.5 py-2.5 shadow-sm cursor-pointer
+          hover:border-slate-300 hover:bg-slate-50 transition-all"
+      >
+        <HiOutlineCalendarDays className="w-5 h-5 text-blue-500 shrink-0" />
+        <input
+          ref={inputRef}
+          type="date"
+          value={value}
+          max={getTodayDate()}
+          onChange={(e) => onChange(e.target.value)}
+          className="text-sm font-medium text-slate-700 outline-none
+            bg-transparent cursor-pointer min-w-32.5 pointer-events-none"
+        />
+      </div>
+    </div>
   );
 };
 
