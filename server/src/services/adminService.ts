@@ -9,6 +9,10 @@ import type {
 } from '../types/types.js';
 import { roundHours } from './utils/helpers.js';
 import type { Timestamp } from 'firebase-admin/firestore';
+
+//----------------------------------------------------------------
+//Responsible for admin logics, firestore CRUD
+
 //--------------EMPLOYEES
 export const readAllEmployees = async (): Promise<UserProfileType[]> => {
   const db = getFirestore();

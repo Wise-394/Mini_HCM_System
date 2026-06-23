@@ -15,8 +15,7 @@ export const adminRouter = Router();
 // GET    /admin/kpi/date                         → get daily kpi of all employees by date
 // GET    /admin/employees                        → get all employees
 // GET    /admin/attendance/:userId               → get all attendance records of a specific employee
-
-// PUT    /admin/attendance/:attendanceId         → edit a specific punch record
+// PUT    /admin/attendance/:userId/:date         → edit a specific punch record
 
 adminRouter.use(verifyToken, verifyAdmin);
 

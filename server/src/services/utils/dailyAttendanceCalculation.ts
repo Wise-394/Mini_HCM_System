@@ -3,6 +3,9 @@ import { DateTime } from 'luxon';
 import { roundHours, getShiftLengthHours } from './helpers.js';
 const MANILA_TZ = 'Asia/Manila';
 
+//----------------------------------------------------------------
+//Helper functions for calculating daily summary
+
 export const calculateHoursWorked = (
   punchIn: AttendanceDoc,
   punchOut: AttendanceDoc

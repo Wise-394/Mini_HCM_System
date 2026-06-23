@@ -1,6 +1,9 @@
 import { getFirestore } from 'firebase-admin/firestore';
 import type { UserProfileType } from '../types/types.js';
 
+//----------------------------------------------------------------
+//Responsible for handling user firestore CRUD
+
 export const createUser = async (userProfile: UserProfileType) => {
   const db = getFirestore();
   await db.collection('users').doc(userProfile.uid).set(userProfile);

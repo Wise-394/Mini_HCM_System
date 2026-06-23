@@ -9,6 +9,9 @@ import {
 } from '../services/attendanceService.js';
 import type { PunchType } from '../types/types.js';
 
+//----------------------------------------------------------------
+//Middleware Controllers for the route /attendance
+
 export const punchAttendance = async (req: Request, res: Response) => {
   try {
     const type = req.body.type as PunchType;

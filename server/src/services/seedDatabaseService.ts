@@ -1,6 +1,10 @@
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
 
+//----------------------------------------------------------------
+//Responsible for seeding database if no data are available
+//used for seeding fake data for demo purposes
+
 const db = getFirestore();
 const auth = getAuth();
 

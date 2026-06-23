@@ -1,6 +1,9 @@
 import type { WorkSchedule } from '../../types/types.js';
 import { Timestamp } from 'firebase-admin/firestore';
 
+//----------------------------------------------------------------
+//Helper functions
+
 export const getTodayManila = (): string =>
   new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });
 

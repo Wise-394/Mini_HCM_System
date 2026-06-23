@@ -2,6 +2,9 @@ import type { NextFunction, Request, Response } from 'express';
 import { createUser, readUser } from '../services/userService.js';
 import { UserProfileType } from '../types/types.js';
 
+//----------------------------------------------------------------
+//Middleware Controllers for the route /register
+
 export const registerUser = async (
   req: Request,
   res: Response,

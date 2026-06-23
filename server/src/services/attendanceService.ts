@@ -3,13 +3,16 @@ import { getFirestore } from 'firebase-admin/firestore';
 import type { DailyAttendance } from '../types/types.js';
 import { toTimestamp } from './utils/helpers.js';
 
+//----------------------------------------------------------------
+//Responsible for attendance firestore CRUD
+
 export const createAttendanceDoc = async (attendanceDoc: AttendanceDoc) => {
   const db = getFirestore();
   await db.collection('attendance').add(attendanceDoc);
 };
 
-// Intentionally has NO staleness filter — used to find and resolve
-// dangling punch-ins regardless of how old they are.
+// Intentionally has NO staleness filter, used to find and resolve
+// dangling punch-ins regardless of how old they are. (punch in with no punch out)
 export const readUnresolvedPunchIn = async (
   userId: string
 ): Promise<AttendanceDoc | null> => {
