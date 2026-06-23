@@ -33,7 +33,7 @@ export const registerUser = async (
     const newUser = await createUser(userProfile);
 
     res
-      .status(201)
+      .status(200)
       .json({ message: 'User registered successfully.', data: newUser });
   } catch (err) {
     if (err instanceof Error) {

@@ -4,8 +4,9 @@ import {
   processPunch,
 } from '../services/attendanceDomainService.js';
 import {
-  readActiveSession,
+  readUnresolvedPunchIn,
   readAttendanceOfUserByDate,
+  readLastPunch,
 } from '../services/attendanceService.js';
 import type { PunchType } from '../types/types.js';
 
@@ -28,7 +29,7 @@ export const punchAttendance = async (req: Request, res: Response) => {
 
     await processPunch(userId, type);
 
-    return res.status(201).json({ message: 'success' });
+    return res.status(200).json({ message: 'success' });
   } catch (err) {
     if (err instanceof Error) console.error(err.message);
     return res.status(500).json({ message: 'Failed to punch attendance' });
@@ -40,11 +41,10 @@ export const getLastPunchAttendanceByUser = async (
   res: Response
 ) => {
   try {
-    if (req.params.userId !== req.user!.uid) {
+    if (req.params.userId !== req.user!.uid)
       return res.status(401).json({ message: 'Unauthorized' });
-    }
 
-    const attendance = await readActiveSession(req.user!.uid);
+    const attendance = await readLastPunch(req.user!.uid);
     return res.status(200).json({ data: attendance });
   } catch (err) {
     if (err instanceof Error) console.error(err.message);

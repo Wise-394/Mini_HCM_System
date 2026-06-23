@@ -30,6 +30,22 @@ export const readUnresolvedPunchIn = async (
   return lastPunch.type === 'in' ? lastPunch : null;
 };
 
+export const readLastPunch = async (
+  userId: string
+): Promise<AttendanceDoc | null> => {
+  const db = getFirestore();
+  const result = await db
+    .collection('attendance')
+    .where('userId', '==', userId)
+    .orderBy('timestamp', 'desc')
+    .limit(1)
+    .get();
+
+  if (result.empty) return null;
+  const doc = result.docs[0];
+  return { id: doc.id, ...doc.data() } as AttendanceDoc;
+};
+
 // Returns the user's active punch-in session, or null if none exists
 // or the last punch-in is older than MAX_SHIFT_HOURS (treated as expired)
 export const readActiveSession = async (
