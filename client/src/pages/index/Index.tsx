@@ -6,6 +6,9 @@ import {
 } from 'react-icons/hi2';
 import { FaGithub } from 'react-icons/fa';
 
+//----------------------------------------------------------------
+// /
+
 export const Index = () => {
   return (
     <div className="flex-1 bg-slate-100 flex flex-col justify-between">

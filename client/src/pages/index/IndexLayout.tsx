@@ -3,6 +3,9 @@ import { useEffect } from 'react';
 import { Header } from '../../components/Header.tsx';
 import { useAuthStore } from '../../store/useAuthStore.ts';
 
+//----------------------------------------------------------------
+// layout for index pages
+
 export const IndexLayout = () => {
   const user = useAuthStore((state) => state.user);
   const isAuthLoading = useAuthStore((state) => state.isAuthLoading);

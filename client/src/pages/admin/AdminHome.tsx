@@ -4,6 +4,9 @@ import { EmployeesKPI } from '../../components/admin/Home/EmpployeesKPI.tsx';
 import { HiOutlineClock } from 'react-icons/hi2';
 import { EmployeesAttendanceList } from '../../components/admin/Home/EmployeesAttendanceList.tsx';
 
+//----------------------------------------------------------------
+// /admin
+
 const getGreeting = () => {
   const hour = new Date().getHours();
   if (hour < 12) return 'Good morning';

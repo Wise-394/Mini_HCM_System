@@ -1,6 +1,10 @@
 import { useParams } from 'react-router';
 import { EmployeeAttendanceList } from '../../components/admin/EmployeesProfile/EmployeeAttendanceList.tsx';
 import { EditAttendanceModal } from '../../components/admin/EmployeesProfile/EditAttendanceModal.tsx';
+
+//----------------------------------------------------------------
+// /admin/employees/:userId
+
 export const EmployeeProfilePage = () => {
   const { userId } = useParams<{ userId: string }>();
 

@@ -5,6 +5,7 @@ import './index.css';
 import App from './App.tsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+//tanstack query to handle caching, refetching etc
 const queryClient = new QueryClient();
 initAuthListener();
 

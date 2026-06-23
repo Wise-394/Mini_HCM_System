@@ -4,6 +4,9 @@ import { getIdToken } from 'firebase/auth';
 import { auth } from '../../configs/firebase.ts';
 import type { UserProfileType } from '../../types/types.ts';
 
+//----------------------------------------------------------------
+//responsible for getting all the employees
+//used by admin
 const getAllEmployees = async (): Promise<UserProfileType[]> => {
   const api = import.meta.env.VITE_BACKEND_API;
   const user = auth.currentUser;

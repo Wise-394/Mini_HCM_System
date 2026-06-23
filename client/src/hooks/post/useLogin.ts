@@ -3,6 +3,9 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { FirebaseError } from 'firebase/app';
 import { auth } from '../../configs/firebase.ts';
 
+//----------------------------------------------------------------
+//Responsible for logging into firebase auth
+
 interface LoginParams {
   email: string;
   password: string;

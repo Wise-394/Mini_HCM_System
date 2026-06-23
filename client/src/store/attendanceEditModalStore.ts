@@ -1,6 +1,9 @@
 import { create } from 'zustand';
 import type { DailyAttendanceWithSummary } from '../types/types';
 
+//----------------------------------------------------------------
+//responsible for storing states of the edit attendance modal
+
 type AttendanceEditModalState = {
   isOpen: boolean;
   selectedDate: string | null;

@@ -4,6 +4,9 @@ import { getIdToken } from 'firebase/auth';
 import { useAuthStore } from '../../store/useAuthStore.ts';
 import type { DailyAttendance } from '../../types/types.ts';
 
+//----------------------------------------------------------------
+//responsible for getting the attendance of logged in user by specific date
+
 const getAttendanceByDate = async (
   userId: string,
   date: string

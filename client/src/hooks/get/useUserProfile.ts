@@ -4,6 +4,9 @@ import { auth } from '../../configs/firebase.ts';
 import type { UserProfileType } from '../../types/types.ts';
 import { useAuthStore } from '../../store/useAuthStore.ts';
 
+//----------------------------------------------------------------
+//Responsible for getting  the user data of logged in user
+
 const getUserProfile = async (
   uid: string | undefined
 ): Promise<UserProfileType> => {

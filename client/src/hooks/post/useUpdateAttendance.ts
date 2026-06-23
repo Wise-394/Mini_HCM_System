@@ -3,6 +3,10 @@ import { getIdToken } from 'firebase/auth';
 import { auth } from '../../configs/firebase.ts';
 import type { FirestoreTimestamp } from '../../types/types.ts';
 
+//----------------------------------------------------------------
+//Responsible for updating the attendance of specific user
+//used by admin
+
 type UpdateAttendancePayload = {
   userId: string;
   date: string;

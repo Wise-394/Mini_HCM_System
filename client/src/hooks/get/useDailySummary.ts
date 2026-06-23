@@ -4,6 +4,9 @@ import { getIdToken } from 'firebase/auth';
 import { useAuthStore } from '../../store/useAuthStore.ts';
 import type { DailySummary } from '../../types/types.ts';
 
+//----------------------------------------------------------------
+//Responsible for getting a daily summary of the logged in user by specific date
+
 const getDailySummaryByDate = async (
   userId: string,
   date: string

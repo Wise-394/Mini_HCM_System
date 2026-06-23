@@ -5,6 +5,9 @@ import type { User } from 'firebase/auth';
 import { auth } from '../../configs/firebase.ts';
 import type { UserProfileType } from '../../types/types.ts';
 
+//----------------------------------------------------------------
+//Responsible for register
+
 interface RegisterParams {
   password: string;
   userProfile: Omit<UserProfileType, 'uid'>;

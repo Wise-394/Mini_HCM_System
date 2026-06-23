@@ -4,6 +4,10 @@ import { getIdToken } from 'firebase/auth';
 import { useAuthStore } from '../../store/useAuthStore.ts';
 import type { DailyAttendanceWithSummary } from '../../types/types.ts';
 
+//----------------------------------------------------------------
+//responsible for getting all the employees attendance based on specific date
+// used by admin
+
 const getAllEmployeesAttendanceByDate = async (
   date: string
 ): Promise<Record<string, DailyAttendanceWithSummary>> => {

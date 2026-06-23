@@ -4,6 +4,9 @@ import { getIdToken } from 'firebase/auth';
 import { useAuthStore } from '../../store/useAuthStore.ts';
 import type { DailySummary } from '../../types/types.ts';
 
+//----------------------------------------------------------------
+//Responsible for getting all daily summary of the logged in user
+
 interface DailySummaryHistoryResponse {
   data: DailySummary[];
   pagination: {

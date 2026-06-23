@@ -4,6 +4,10 @@ import { getIdToken } from 'firebase/auth';
 import { useAuthStore } from '../../store/useAuthStore.ts';
 import type { AdminDailyKpis } from '../../types/types.ts';
 
+//----------------------------------------------------------------
+//Responsible for the KPI of all employees via specific date
+//used by admin
+
 const getKPIOfAllEmployees = async (date: string): Promise<AdminDailyKpis> => {
   const api = import.meta.env.VITE_BACKEND_API;
   const user = auth.currentUser;

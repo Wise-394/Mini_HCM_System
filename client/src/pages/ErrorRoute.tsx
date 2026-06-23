@@ -1,4 +1,9 @@
 import { Link } from 'react-router';
+
+//----------------------------------------------------------------
+// error route
+// responsible for showing error page eg. invalid link
+
 export const ErrorRoute = () => {
   return (
     <>

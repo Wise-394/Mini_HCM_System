@@ -4,6 +4,9 @@ import { auth } from '../../configs/firebase.ts';
 import { useAuthStore } from '../../store/useAuthStore.ts';
 import type { PunchType } from '../../types/types.ts';
 
+//----------------------------------------------------------------
+//Responsible for punching the attendance to the backend
+
 const postPunchAttendance = async (punchType: PunchType) => {
   const api = import.meta.env.VITE_BACKEND_API;
   const user = auth.currentUser;

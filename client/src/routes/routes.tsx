@@ -12,6 +12,8 @@ import { AdminHome } from '../pages/admin/AdminHome.tsx';
 import { EmployeesList } from '../pages/admin/EmployeesList.tsx';
 import { EmployeeProfilePage } from '../pages/admin/EmployeeProfile.tsx';
 
+//contains all the routes available in the web app
+
 export const routes: RouteObject[] = [
   {
     path: '/',
@@ -47,4 +49,3 @@ export const routes: RouteObject[] = [
     ],
   },
 ];
-//TODO FIX ABSOLUTE PATH  HOME DASHBOARD

@@ -3,6 +3,9 @@ import { useEffect } from 'react';
 import { useAuthStore } from '../../store/useAuthStore.ts';
 import { Header } from '../../components/Header.tsx';
 
+//----------------------------------------------------------------
+// layout page for admin pages
+
 export const AdminLayout = () => {
   const user = useAuthStore((state) => state.user);
   const isAuthLoading = useAuthStore((state) => state.isAuthLoading);

@@ -1,5 +1,8 @@
 import { create } from 'zustand';
 
+//----------------------------------------------------------------
+//responsible for storing states for logged in user
+
 interface AuthUser {
   uid: string;
   email: string;

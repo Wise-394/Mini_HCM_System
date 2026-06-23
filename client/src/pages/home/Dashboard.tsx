@@ -4,6 +4,9 @@ import { DailySummaryList } from '../../components/home/dashboard/DailySummaryLi
 import { PunchClockPanel } from '../../components/home/dashboard/PunchClockPanel.tsx';
 import { useUserProfile } from '../../hooks/get/useUserProfile.ts';
 
+//----------------------------------------------------------------
+// /home/dashboard
+
 export const Dashboard = () => {
   const [now, setNow] = useState(new Date());
   const { userProfile, isUserLoading, userError } = useUserProfile();

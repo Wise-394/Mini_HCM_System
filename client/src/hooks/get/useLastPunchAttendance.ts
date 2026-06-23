@@ -4,6 +4,10 @@ import { getIdToken } from 'firebase/auth';
 import { useAuthStore } from '../../store/useAuthStore.ts';
 import type { Attendance } from '../../types/types.ts';
 
+//----------------------------------------------------------------
+//Responsible for getting the last punch attendance
+//Necessary for knowing if the next attendance is punch in or punch out
+
 const getLastPunchAttendance = async (): Promise<Attendance> => {
   const api = import.meta.env.VITE_BACKEND_API;
   const user = auth.currentUser;

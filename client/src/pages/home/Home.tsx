@@ -6,6 +6,9 @@ import { getInitials } from '../../helpers/getInitials.ts';
 import { getGreeting } from '../../helpers/getGreetings.ts';
 import { formatClock } from '../../helpers/formats.ts';
 
+//----------------------------------------------------------------
+// /home
+
 export const Home = () => {
   const { userProfile, isUserLoading, userError } = useUserProfile();
   const { lastAttendance, isAttendanceLoading } = useLastPunchAttendance();

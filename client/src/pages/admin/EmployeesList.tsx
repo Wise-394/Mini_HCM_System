@@ -5,6 +5,9 @@ import {
   GRID,
 } from '../../components/admin/EmployeesProfile/EmployeeListRow.tsx';
 
+//----------------------------------------------------------------
+// /admin/employees
+
 const COLUMNS = ['Name', 'Email', 'Shift', 'Role', ''];
 
 export const EmployeesList = () => {

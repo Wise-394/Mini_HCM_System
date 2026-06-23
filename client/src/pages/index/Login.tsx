@@ -2,6 +2,9 @@ import type React from 'react';
 import { Link } from 'react-router';
 import { useLogin } from '../../hooks/post/useLogin.ts';
 
+//----------------------------------------------------------------
+// /login
+
 export const Login = () => {
   const { loginUser, isLoading, error } = useLogin();
 
