@@ -1,6 +1,9 @@
 import { getFirestore } from 'firebase-admin/firestore';
 import type { DailySummary } from '../types/types.js';
 
+//----------------------------------------------------------------
+//Responsible for handling daily summary firestore CRUD
+
 export const saveDailySummary = async (summary: DailySummary) => {
   const db = getFirestore();
   const docId = `${summary.userId}_${summary.date}`;

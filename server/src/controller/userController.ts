@@ -2,6 +2,9 @@ import type { NextFunction, Request, Response } from 'express';
 import { createUser, readUser } from '../services/userService.js';
 import { UserProfileType } from '../types/types.js';
 
+//----------------------------------------------------------------
+//Middleware Controllers for the route /register
+
 export const registerUser = async (
   req: Request,
   res: Response,
@@ -30,7 +33,7 @@ export const registerUser = async (
     const newUser = await createUser(userProfile);
 
     res
-      .status(201)
+      .status(200)
       .json({ message: 'User registered successfully.', data: newUser });
   } catch (err) {
     if (err instanceof Error) {

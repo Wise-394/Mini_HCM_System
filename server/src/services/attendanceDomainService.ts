@@ -13,6 +13,9 @@ import { getTodayManila } from './utils/helpers.js';
 import { Timestamp } from 'firebase-admin/firestore';
 import type { AttendanceDoc, PunchType } from '../types/types.js';
 
+//----------------------------------------------------------------
+//Responsible for attendance logics
+
 export type PunchValidationError = { ok: false; reason: string } | { ok: true };
 
 export const validatePunch = async (

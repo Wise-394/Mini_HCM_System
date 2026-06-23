@@ -18,6 +18,7 @@ const getLastPunchAttendance = async (): Promise<Attendance> => {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
+      'Cache-Control': 'no-cache',
     },
   });
   if (!res.ok) {
@@ -39,7 +40,6 @@ export const useLastPunchAttendance = () => {
     refetchOnWindowFocus: false,
     retry: false,
   });
-
   return {
     lastAttendance: data,
     isAttendanceLoading: isLoading || isAuthLoading,

@@ -1,6 +1,9 @@
 import { getAuth } from 'firebase-admin/auth';
 import { Request, Response, NextFunction } from 'express';
 
+//----------------------------------------------------------------
+//Middleware for authenticating user
+
 //successful verification -> attach to user object
 //failed verification -> return res 401 unauthorized
 export const verifyToken = async (

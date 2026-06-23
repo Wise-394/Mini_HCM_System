@@ -11,6 +11,9 @@ import {
 } from './utils/dailyAttendanceCalculation.js';
 import type { DailySummary } from '../types/types.js';
 
+//----------------------------------------------------------------
+//Responsible for computing daily summary logic
+
 export const computeDailySummary = async (
   userId: string,
   date: string

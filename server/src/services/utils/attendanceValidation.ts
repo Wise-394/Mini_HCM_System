@@ -4,6 +4,7 @@ import type {
   AttendanceValidationResult,
 } from '../../types/types.js';
 
+//----------------------------------------------------------------
 //  Decides whether a punch of `type` is allowed, given the user's last punch
 //  Rules:
 //  1. No punch history yet → must punch in first.

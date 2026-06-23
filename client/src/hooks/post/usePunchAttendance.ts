@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { getIdToken } from 'firebase/auth';
 import { auth } from '../../configs/firebase.ts';
-import { useAuthStore } from '../../store/useAuthStore.ts';
 import type { PunchType } from '../../types/types.ts';
 
 //----------------------------------------------------------------
@@ -30,19 +29,27 @@ const postPunchAttendance = async (punchType: PunchType) => {
 
 export const usePunchAttendance = () => {
   const queryClient = useQueryClient();
-  const user = useAuthStore((state) => state.user);
 
   const { mutate, isPending, error } = useMutation({
     mutationFn: postPunchAttendance,
     onSuccess: () => {
+      const uid = auth.currentUser?.uid;
       queryClient.invalidateQueries({
-        queryKey: ['lastAttendance', user?.uid],
+        queryKey: ['lastAttendance', uid],
+        refetchType: 'all',
       });
-      queryClient.invalidateQueries({ queryKey: ['attendance', user?.uid] });
       queryClient.invalidateQueries({
-        queryKey: ['dailySummaryHistory', user?.uid],
+        queryKey: ['attendance', uid],
+        refetchType: 'all',
       });
-      queryClient.invalidateQueries({ queryKey: ['dailySummary', user?.uid] });
+      queryClient.invalidateQueries({
+        queryKey: ['dailySummaryHistory', uid],
+        refetchType: 'all',
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['dailySummary', uid],
+        refetchType: 'all',
+      });
     },
   });
 

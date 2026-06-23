@@ -1,6 +1,9 @@
 import type { Request, Response, NextFunction } from 'express';
 import { readUser } from '../services/userService.js';
 
+//----------------------------------------------------------------
+//Middleware for authentication of admin
+
 export const verifyAdmin = async (
   req: Request,
   res: Response,

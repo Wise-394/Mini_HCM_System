@@ -5,6 +5,9 @@ import {
 } from '../services/dailySummaryService.js';
 import { toStringParam } from '../services/utils/helpers.js';
 
+//----------------------------------------------------------------
+//Middleware Controllers for the route /daily-summaries
+
 export const getUserDailySummaryHistory = async (
   req: Request,
   res: Response,

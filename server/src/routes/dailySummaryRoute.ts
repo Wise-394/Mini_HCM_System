@@ -9,6 +9,7 @@ export const dailySummaryRouter = Router();
 
 // GET    /api/daily-summaries/:userId/:date                   → get daily summary of user in specific date
 // GET    /api/daily-summaries/:userId?offset=0&limit=10       → get daily summary history of user based on offset and limit
+
 dailySummaryRouter.use(verifyToken);
 dailySummaryRouter.get('/:userId/:date', getUserDailySummaryByDate);
 dailySummaryRouter.get('/:userId', getUserDailySummaryHistory);

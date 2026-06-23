@@ -11,6 +11,9 @@ import {
 } from '../services/adminService.js';
 import { readAllUsersAttendanceByDate } from '../services/adminService.js';
 
+//----------------------------------------------------------------
+//Middleware Controllers for the route /daily-summaries
+
 export const getKPIOfAllEmployees = async (
   req: Request,
   res: Response,

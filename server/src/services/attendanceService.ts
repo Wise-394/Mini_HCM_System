@@ -3,13 +3,16 @@ import { getFirestore } from 'firebase-admin/firestore';
 import type { DailyAttendance } from '../types/types.js';
 import { toTimestamp } from './utils/helpers.js';
 
+//----------------------------------------------------------------
+//Responsible for attendance firestore CRUD
+
 export const createAttendanceDoc = async (attendanceDoc: AttendanceDoc) => {
   const db = getFirestore();
   await db.collection('attendance').add(attendanceDoc);
 };
 
-// Intentionally has NO staleness filter — used to find and resolve
-// dangling punch-ins regardless of how old they are.
+// Intentionally has NO staleness filter, used to find and resolve
+// dangling punch-ins regardless of how old they are. (punch in with no punch out)
 export const readUnresolvedPunchIn = async (
   userId: string
 ): Promise<AttendanceDoc | null> => {
@@ -25,6 +28,22 @@ export const readUnresolvedPunchIn = async (
   const doc = result.docs[0];
   const lastPunch = { id: doc.id, ...doc.data() } as AttendanceDoc;
   return lastPunch.type === 'in' ? lastPunch : null;
+};
+
+export const readLastPunch = async (
+  userId: string
+): Promise<AttendanceDoc | null> => {
+  const db = getFirestore();
+  const result = await db
+    .collection('attendance')
+    .where('userId', '==', userId)
+    .orderBy('timestamp', 'desc')
+    .limit(1)
+    .get();
+
+  if (result.empty) return null;
+  const doc = result.docs[0];
+  return { id: doc.id, ...doc.data() } as AttendanceDoc;
 };
 
 // Returns the user's active punch-in session, or null if none exists

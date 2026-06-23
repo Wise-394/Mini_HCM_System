@@ -1,5 +1,8 @@
 import { body } from 'express-validator';
 
+//----------------------------------------------------------------
+//Middleware for validating user inputs
+
 export const validateUserProfile = [
   body('uid')
     .trim()
