@@ -8,6 +8,10 @@ import type {
   FirestoreTimestamp,
 } from '../../../types/types.ts';
 
+//----------------------------------------------------------------
+//The modal/dialog for editing the attendance of specific employee
+//opening/closing states are managed by useAttendanceEditModalStore
+
 const toTimeInput = (timestamp?: string | FirestoreTimestamp | null) => {
   if (!timestamp) return '';
   const date =

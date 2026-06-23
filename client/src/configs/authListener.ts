@@ -3,6 +3,10 @@ import { auth } from './firebase.ts';
 import { useAuthStore } from '../store/useAuthStore.ts';
 import type { UserProfileType } from '../types/types.ts';
 
+//----------------------------------------------------------------
+//listens to firebase auth and updates the useAuthStore for authentication changes
+//necessary for redirections/route guarding etc
+
 const API_BASE_URL = import.meta.env.VITE_BACKEND_API;
 
 export const initAuthListener = () => {

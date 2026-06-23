@@ -1,5 +1,7 @@
 import type { FirestoreTimestamp } from '../types/types.ts';
 
+//helpers for time formatting
+
 export const formatClock = (date: Date) =>
   date.toLocaleTimeString('en-PH', {
     hour: '2-digit',

@@ -8,6 +8,9 @@ import {
 import { useDailySummaryHistory } from '../../../hooks/get/useDailySummaryHistory.ts';
 import { useSelectedDateStore } from '../../../store/useSelectedStore.ts';
 
+//----------------------------------------------------------------
+//Shows the daily summary history of  the logged in user
+
 const GRID =
   'grid grid-cols-3 sm:grid-cols-6 gap-x-3 gap-y-1 sm:gap-x-4 sm:gap-y-2 sm:items-center';
 

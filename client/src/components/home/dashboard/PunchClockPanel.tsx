@@ -5,6 +5,10 @@ import { useAttendance } from '../../../hooks/get/useAttendance.ts';
 import { useUserProfile } from '../../../hooks/get/useUserProfile.ts';
 import { formatClock, formatTimestamp } from '../../../helpers/formats.ts';
 import { useSelectedDateStore } from '../../../store/useSelectedStore.ts';
+
+//----------------------------------------------------------------
+//For punching in and punching out daily attendance of the logged in user
+
 interface PunchClockCardProps {
   now: Date;
   statusLabel: string;
@@ -20,6 +24,8 @@ export const PunchClockPanel = () => {
     return () => clearInterval(id);
   }, []);
 
+  //useMemo for memoziation of today
+  //state updates every second, needs to memoized/cache today to prevent 'today' to recalculate every state update
   const today = useMemo(() => new Date().toISOString().split('T')[0], []);
   const selectedDate = useSelectedDateStore((state) => state.selectedDate);
   const date = selectedDate ?? today;

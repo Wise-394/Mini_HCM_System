@@ -2,6 +2,9 @@ import { HiOutlineClipboardDocumentList } from 'react-icons/hi2';
 import { useAllAttendanceWithDailySummaryOfUser } from '../../../hooks/get/useAllAttendanceWithDailySummaryOfUser.ts';
 import { EmployeeAttendanceRow, GRID } from './EmployeeAttendanceRow.tsx';
 
+//----------------------------------------------------------------
+//Shows all of the attendance + daily summary of a specific employee
+
 const COLUMNS = [
   'Date',
   'Time In',
@@ -73,6 +76,7 @@ export const EmployeeAttendanceList = ({ userId }: { userId: string }) => {
             No attendance records found.
           </p>
         ) : (
+          //EMPLOYEES ROWS
           rows.map(([date, record]) => (
             <div key={date} className="border-b border-gray-100 last:border-0">
               <EmployeeAttendanceRow

@@ -16,6 +16,9 @@ import {
 import { useKPIOfAllEmployees } from '../../../hooks/get/useKPIOfAllEmployeess.ts';
 import { useSelectedDateStore } from '../../../store/useSelectedStore.ts';
 
+//----------------------------------------------------------------
+//Shows the summarized Daily summary of all employees
+
 type KpiDatePickerProps = {
   value: string;
   onChange: (date: string) => void;

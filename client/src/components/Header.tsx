@@ -15,6 +15,10 @@ import {
   HiOutlineUser,
 } from 'react-icons/hi2';
 
+//----------------------------------------------------------------
+//Serves as a header for the whole web appplication
+//changes view depending if guest/employee/admin
+
 type UserRole = 'admin' | 'employee';
 
 interface AuthUser {

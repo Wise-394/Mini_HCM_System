@@ -11,8 +11,11 @@ import { useAllEmployeesAttendanceByDate } from '../../../hooks/get/useAllEmploy
 import { useSelectedDateStore } from '../../../store/useSelectedStore.ts';
 import type { DailyAttendanceWithSummary } from '../../../types/types.ts';
 
+//----------------------------------------------------------------
+//Shows all employees with their daily summary and attendance for the selected date
+
 const GRID =
-  'grid grid-cols-3 sm:grid-cols-7 gap-x-3 gap-y-1 sm:gap-x-4 sm:gap-y-0 sm:items-center';
+  'grid grid-cols-3 sm:grid-cols-8 gap-x-3 gap-y-1 sm:gap-x-4 sm:gap-y-0 sm:items-center';
 
 const Stat = ({ label, value }: { label: string; value: string }) => (
   <div>
@@ -75,6 +78,10 @@ const AttendanceRow = ({
           <Stat label="Hours" value={formatHrs(summary?.hoursWorked ?? 0)} />
           <Stat label="OT" value={formatHrs(summary?.overtimeHours ?? 0)} />
           <Stat label="Late" value={formatMins(summary?.lateMinutes ?? 0)} />
+          <Stat
+            label="Late"
+            value={formatMins(summary?.undertimeMinutes ?? 0)}
+          />
         </>
       )}
     </div>
@@ -117,7 +124,7 @@ export const EmployeesAttendanceList = () => {
       </div>
 
       <div
-        className="hidden sm:grid sm:grid-cols-7 gap-x-4 px-6 py-3 text-xs
+        className="hidden sm:grid sm:grid-cols-8 gap-x-4 px-6 py-3 text-xs
           font-semibold text-gray-400 uppercase tracking-wide border-b
           border-gray-100"
       >
@@ -129,6 +136,7 @@ export const EmployeesAttendanceList = () => {
           'Hours',
           'OT',
           'Late',
+          'Undertime',
         ].map((col) => (
           <div key={col}>{col}</div>
         ))}

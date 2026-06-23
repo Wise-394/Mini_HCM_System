@@ -3,6 +3,10 @@ import { HiOutlineChevronRight } from 'react-icons/hi2';
 import type { UserProfileType } from '../../../types/types.ts';
 import { formatShiftTime } from '../../../helpers/formats.ts';
 
+//----------------------------------------------------------------
+//each row shows the employee with his schedule and email
+//used by EmployeesList
+
 export const GRID =
   'grid grid-cols-2 sm:grid-cols-[2fr_2fr_1.5fr_1fr_auto] gap-x-3 gap-y-1 sm:gap-x-4 sm:gap-y-0 sm:items-center';
 

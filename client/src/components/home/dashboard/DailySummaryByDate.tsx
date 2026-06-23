@@ -14,6 +14,9 @@ import {
 import { useDailySummary } from '../../../hooks/get/useDailySummary.ts';
 import { useSelectedDateStore } from '../../../store/useSelectedStore.ts';
 
+//----------------------------------------------------------------
+//Shows the daily summary of specified date of the logged in user
+
 const getTodayDate = () => new Date().toISOString().split('T')[0];
 
 export const DailySummaryByDate = () => {
