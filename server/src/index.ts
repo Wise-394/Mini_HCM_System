@@ -15,6 +15,7 @@ const allowedOrigins = [
   'http://localhost:5173',
   'https://mini-hcm-system.web.app',
   'https://mini-hcm-system.firebaseapp.com',
+  'https://hcm.jrdumlao.com/',
 ];
 
 app.use(
